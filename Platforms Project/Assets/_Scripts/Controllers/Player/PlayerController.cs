@@ -41,6 +41,8 @@ public class PlayerController : MonoBehaviour
     public float knockBackTime;
     private float knockBackCounter;
 
+    private bool isLanding;
+
     private void Awake()
     {
         _playerControls = new PlayerControls();
@@ -110,7 +112,7 @@ public class PlayerController : MonoBehaviour
 
         movementSpeed = movementInput.magnitude * 6f;
        
-        if (direction.magnitude >= 0.1f && playerCombat.isPunching == false)
+        if (direction.magnitude >= 0.1f && !playerCombat.isPunching && !isLanding)
         {
             
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
@@ -209,4 +211,19 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Método que registra si el jugador está aterrizando, si es así, no podra moverse mientras esto ocurre. Llamado por un Animator Event al inicio de la animación de aterrizaje.
+    /// </summary>
+    public void IsLanding()
+    {
+        isLanding = true;
+    }
+
+    /// <summary>
+    /// Método que registra si el jugador ya ha aterrizado, si es así, podra continuar moviendose, llamado por un Animator Event al final de la animación del aterrizaje.
+    /// </summary>
+    public void HasLanded()
+    {
+        isLanding = false;
+    }
 }
