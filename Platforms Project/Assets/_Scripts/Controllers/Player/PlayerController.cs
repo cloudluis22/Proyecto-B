@@ -100,7 +100,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, groundDistance);
+    }
+
     /// <summary>
     /// Método que crea el movimiento y rotación del jugador.
     /// </summary>
