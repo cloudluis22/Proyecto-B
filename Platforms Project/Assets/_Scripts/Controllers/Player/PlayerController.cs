@@ -100,10 +100,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, groundDistance);
+        Gizmos.DrawWireSphere(groundCheck.position, groundDistance);
     }
 
     /// <summary>
@@ -162,7 +162,6 @@ public class PlayerController : MonoBehaviour
     {
        if(_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.running)
         {
-            
             _animator.SetTrigger("ShortJump");
         }
         
