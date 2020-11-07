@@ -64,13 +64,15 @@ public class PlayerController : MonoBehaviour
         health.GetComponent<PlayerHealth>();
         _animator = GetComponent<Animator>();
         playerAudio = GetComponent<PlayerAudio>();
+
+        GameObject.FindGameObjectsWithTag("Ground");
     }
 
     void Update()
     {
         IsGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-        if(IsGrounded && gravityVelocity.y < 0)
+        if (IsGrounded && gravityVelocity.y < 0)
         {
             gravityVelocity.y = -2f;
             _animator.SetBool("IsGrounded", true);
@@ -81,7 +83,7 @@ public class PlayerController : MonoBehaviour
             _animator.SetBool("IsGrounded", false);
         }
 
-        if(knockBackCounter <= 0)
+        if (knockBackCounter <= 0)
         {
 
            if(health.IsDead == false)
