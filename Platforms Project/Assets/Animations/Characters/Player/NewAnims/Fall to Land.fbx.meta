@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: aa872d6fafc1d9245afbf4831e3f43dd
+guid: c1a68776c5701a54a91b874bcea1e057
 ModelImporter:
   serializedVersion: 20101
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: mixamo.com
+    second: New Fall to Land
   externalObjects: {}
   materials:
     materialImportMode: 1
@@ -35,18 +35,18 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: mixamo.com
+      name: New Fall to Land
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 35
+      lastFrame: 32
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
