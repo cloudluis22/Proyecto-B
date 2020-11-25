@@ -23,6 +23,9 @@ public class PlayerAudio : MonoBehaviour
     [SerializeField]
     private AudioClip[] concreteArray = new AudioClip[3];
 
+    [SerializeField]
+    private float minPitch = 0.75f, maxPitch = 1.5f;
+
 
     // Start is called before the first frame update
     void Start()
@@ -47,14 +50,16 @@ public class PlayerAudio : MonoBehaviour
     private void Footstep()
     {
         int randomIndex = Random.Range(0, concreteArray.Length);
-        _audioSource.PlayOneShot(concreteArray[randomIndex]);
+        _audioSource.PlayOneShot(concreteArray[randomIndex], 0.25f);
     }
 
     /// <summary>
-    /// Metodo que reproduce el sonido del salto, llamado por un Animator Event en la animación de saltar.
+    /// Método que reproduce el sonido del salto, llamado por un Animator Event en la animación de saltar.
     /// </summary>
     private void JumpSound()
     {
+        float randomPitch = Random.Range(minPitch, maxPitch);
+        _audioSource.pitch = randomPitch;
         _audioSource.PlayOneShot(shortJumpSound);
     }
 
@@ -66,16 +71,25 @@ public class PlayerAudio : MonoBehaviour
         _audioSource.PlayOneShot(coinSound);
     }
 
+   /// <summary>
+   /// Método que reproduce el sonido de el aire al golpear cada vez que el jugador decide golpear.
+   /// </summary>
     public void PunchSound()
     {
         _audioSource.PlayOneShot(punchSound);
     }
 
+    /// <summary>
+    /// Método que reproduce el sonido del golpeo una vez el puño impacta a un enemigo con éxito.
+    /// </summary>
     public void HitSound()
     {
         _audioSource.PlayOneShot(hitSound);
     }
     
+   /// <summary>
+   /// Método que reproduce el sonido de dolor si el jugador es golpeado con éxito por algún enemigo.
+   /// </summary>
     public void HurtSound()
     {
         _audioSource.PlayOneShot(hurtSound);
