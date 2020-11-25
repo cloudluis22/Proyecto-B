@@ -7,42 +7,30 @@ using UnityEngine.SocialPlatforms;
 
 public class PlayerAudio : MonoBehaviour
 {
-    public static AudioSource _audioSource;
+    public AudioSource _audioSource;
 
-    private AudioClip concreteFootstep1;
-    private AudioClip concreteFootstep2;
-    private AudioClip concreteFootstep3;
+    //Movimiento:
 
-    private AudioClip shortJumpSound;
-    private AudioClip punchSound;
-    private AudioClip hitSound;
-    private AudioClip hurtSound;
-
-    private AudioClip coinSound;
-
+    //Arreglo de pasos de concreto.
     [SerializeField]
     private AudioClip[] concreteArray = new AudioClip[3];
 
+    //Variables de salto largo y corto.
+    [SerializeField]
+    private AudioClip shortJumpSound, longJumpSound;
+
+    //Combate: sonidos de golpear en el aire, golpear, ser golpeado.
+    [SerializeField]
+    private AudioClip punchSound, hitSound, hurtSound;
+
+    //Sonido de recoger monedas.
+    [SerializeField]
+    private AudioClip coinSound;
+
+    
+    //Variables del valor flotantes del tono, el cual irá variando entre el mínimo y el máximo.
     [SerializeField]
     private float minPitch = 0.75f, maxPitch = 1.5f;
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        _audioSource = GetComponent<AudioSource>();
-
-        concreteFootstep1 = Resources.Load<AudioClip>("Concrete_1");
-        concreteFootstep2 = Resources.Load<AudioClip>("Concrete_2");
-        concreteFootstep3 = Resources.Load<AudioClip>("Concrete_3");
-
-        shortJumpSound = Resources.Load<AudioClip>("Short Jump");
-        punchSound = Resources.Load<AudioClip>("Air Punch");
-        hitSound = Resources.Load<AudioClip>("Damage Effect");
-        hurtSound = Resources.Load<AudioClip>("Benny Damage");
-        coinSound = Resources.Load<AudioClip>("Pickup Coin");
-
-    }
 
     /// <summary>
     /// Método que reproduce el sonido de los pasos, llamado por un Animator Event en la animación de caminar.
@@ -50,13 +38,24 @@ public class PlayerAudio : MonoBehaviour
     private void Footstep()
     {
         int randomIndex = Random.Range(0, concreteArray.Length);
+        _audioSource.pitch = 1f;
         _audioSource.PlayOneShot(concreteArray[randomIndex], 0.25f);
     }
 
     /// <summary>
-    /// Método que reproduce el sonido del salto, llamado por un Animator Event en la animación de saltar.
+    /// Método que reproduce el sonido del salto alto, llamado por un Animator Event en la animación de saltar alto.
     /// </summary>
-    private void JumpSound()
+    private void LongJumpSound()
+    {
+        float randomPitch = Random.Range(minPitch, maxPitch);
+        _audioSource.pitch = randomPitch;
+        _audioSource.PlayOneShot(longJumpSound);
+    }
+
+    /// <summary>
+    /// Método que reproduce el sonido del salto corto, llamado por un Animator Event en la animación de saltar de forma corta.
+    /// </summary>
+    private void ShortJumpSound()
     {
         float randomPitch = Random.Range(minPitch, maxPitch);
         _audioSource.pitch = randomPitch;
