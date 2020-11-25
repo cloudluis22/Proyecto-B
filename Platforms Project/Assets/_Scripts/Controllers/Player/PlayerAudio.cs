@@ -20,6 +20,7 @@ public class PlayerAudio : MonoBehaviour
 
     private AudioClip coinSound;
 
+    [SerializeField]
     private AudioClip[] concreteArray = new AudioClip[3];
 
 
@@ -38,13 +39,12 @@ public class PlayerAudio : MonoBehaviour
         hurtSound = Resources.Load<AudioClip>("Benny Damage");
         coinSound = Resources.Load<AudioClip>("Pickup Coin");
 
-        concreteArray[0] = concreteFootstep1; concreteArray[1] = concreteFootstep2; concreteArray[2] = concreteFootstep3;
     }
 
     /// <summary>
     /// Método que reproduce el sonido de los pasos, llamado por un Animator Event en la animación de caminar.
     /// </summary>
-    private void Footsteps()
+    private void Footstep()
     {
         int randomIndex = Random.Range(0, concreteArray.Length);
         _audioSource.PlayOneShot(concreteArray[randomIndex]);
