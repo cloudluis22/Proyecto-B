@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public enum AnimationStates { standing, walking, running, punching, jumping };
+public enum AnimationStates { standing, walking, running, punching, jumping, falling};
     
 public class PlayerController : MonoBehaviour
 {
@@ -40,6 +40,8 @@ public class PlayerController : MonoBehaviour
 
     private bool isLanding;
     private bool isJumping;
+
+    public float speedNumber = 6f;
 
     private void Awake()
     {
@@ -115,7 +117,7 @@ public class PlayerController : MonoBehaviour
         Vector2 movementInput = _playerControls.Land.Move.ReadValue<Vector2>();
         Vector3 direction = new Vector3(movementInput.x, 0f, movementInput.y);
 
-        movementSpeed = movementInput.magnitude * 6f;
+        movementSpeed = movementInput.magnitude * speedNumber;
        
         if (direction.magnitude >= 0.1f && !playerCombat.isPunching && !isLanding)
         {
@@ -173,6 +175,7 @@ public class PlayerController : MonoBehaviour
     public void ShortPlayerJump()
     {
         gravityVelocity.y = Mathf.Sqrt(shortJumpHeight * -2f * gravity);
+        speedNumber = 7f;
     }
 
     /// <summary>
@@ -194,6 +197,7 @@ public class PlayerController : MonoBehaviour
     public void LongPlayerJump()
     {
         gravityVelocity.y = Mathf.Sqrt(longJumpHeight * -2f * gravity);
+        speedNumber = 3f;
     }
 
 
@@ -229,6 +233,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void HasLanded()
     {
+        speedNumber = 6f;
         isLanding = false;
         isJumping = false;
     }
