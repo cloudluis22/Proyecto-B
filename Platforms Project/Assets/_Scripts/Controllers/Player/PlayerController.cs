@@ -28,12 +28,9 @@ public class PlayerController : MonoBehaviour
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
     private bool IsGrounded;
-    private bool isGoingToJump;
 
     public float shortJumpHeight = 2f;
     public float longJumpHeight = 4f;
-
-    public bool _jump;
 
     public PlayerHealth health;
 
@@ -42,6 +39,7 @@ public class PlayerController : MonoBehaviour
     private float knockBackCounter;
 
     private bool isLanding;
+    private bool isJumping;
 
     private void Awake()
     {
@@ -162,7 +160,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void ShortJumpAnimation()
     {
-       if(_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.running)
+       if(_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.running && !isJumping)
         {
             _animator.SetTrigger("ShortJump");
         }
@@ -182,9 +180,9 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void LongJumpAnimation()
     {
-        if (_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.standing)
+        if (_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.standing && !isJumping)
         {
-           
+             isJumping = true;
             _animator.SetTrigger("LongJump");
         }
 
@@ -208,6 +206,7 @@ public class PlayerController : MonoBehaviour
         _characterController.Move(direction * knockBackForce * Time.deltaTime);
     }
 
+    //Lógica de recoger monedas al entrar en contacto con ellas.
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Coin"))
@@ -226,10 +225,11 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Método que registra si el jugador ya ha aterrizado, si es así, podra continuar moviendose, llamado por un Animator Event al final de la animación del aterrizaje.
+    /// Método que registra si el jugador ya ha aterrizado, si es así, podra continuar moviendose además de poder volver a saltar. Llamado por un Animator Event al final de la animación del aterrizaje.
     /// </summary>
     public void HasLanded()
     {
         isLanding = false;
+        isJumping = false;
     }
 }

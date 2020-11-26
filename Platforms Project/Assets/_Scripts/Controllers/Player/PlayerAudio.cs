@@ -28,9 +28,12 @@ public class PlayerAudio : MonoBehaviour
     private AudioClip coinSound;
 
     
-    //Variables del valor flotantes del tono, el cual irá variando entre el mínimo y el máximo.
+    
     [SerializeField]
-    private float minPitch = 0.75f, maxPitch = 1.5f;
+    private float longJumpMinPitch = 0.65f, longJumpMaxPitch = 1.2f;
+
+    [SerializeField]
+    private float shortJumpMinPitch = 0.7f, shortJumpMaxPitch = 1.5f;
 
     /// <summary>
     /// Método que reproduce el sonido de los pasos, llamado por un Animator Event en la animación de caminar.
@@ -39,7 +42,7 @@ public class PlayerAudio : MonoBehaviour
     {
         int randomIndex = Random.Range(0, concreteArray.Length);
         _audioSource.pitch = 1f;
-        _audioSource.PlayOneShot(concreteArray[randomIndex], 0.25f);
+        _audioSource.PlayOneShot(concreteArray[randomIndex], 0.15f);
     }
 
     /// <summary>
@@ -47,9 +50,9 @@ public class PlayerAudio : MonoBehaviour
     /// </summary>
     private void LongJumpSound()
     {
-        float randomPitch = Random.Range(minPitch, maxPitch);
+        float randomPitch = Random.Range(longJumpMinPitch, longJumpMaxPitch);
         _audioSource.pitch = randomPitch;
-        _audioSource.PlayOneShot(longJumpSound);
+        _audioSource.PlayOneShot(longJumpSound, 0.2f);
     }
 
     /// <summary>
@@ -57,9 +60,9 @@ public class PlayerAudio : MonoBehaviour
     /// </summary>
     private void ShortJumpSound()
     {
-        float randomPitch = Random.Range(minPitch, maxPitch);
+        float randomPitch = Random.Range(shortJumpMinPitch, shortJumpMaxPitch);
         _audioSource.pitch = randomPitch;
-        _audioSource.PlayOneShot(shortJumpSound);
+        _audioSource.PlayOneShot(shortJumpSound, 0.2f);
     }
 
     /// <summary>

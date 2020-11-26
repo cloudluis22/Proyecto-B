@@ -11,7 +11,6 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        Application.targetFrameRate = 60;
         _playerControls = new PlayerControls();
     }
 
@@ -25,12 +24,6 @@ public class GameManager : MonoBehaviour
         _playerControls.Disable();
     }
 
-    void Start()
-    {
-        
-    }
-
-   
     void Update()
     {
         GameExit();
