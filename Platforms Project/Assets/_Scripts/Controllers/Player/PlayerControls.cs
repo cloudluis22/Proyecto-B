@@ -81,6 +81,14 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Debug HP"",
+                    ""type"": ""Button"",
+                    ""id"": ""46a85771-623b-4e83-90a1-fc21be00c076"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -281,6 +289,17 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""Restart"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cad2fbfd-6038-403a-a04d-849992a52133"",
+                    ""path"": ""<Keyboard>/l"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Debug HP"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -297,6 +316,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Land_Unpause = m_Land.FindAction("Unpause", throwIfNotFound: true);
         m_Land_Quit = m_Land.FindAction("Quit", throwIfNotFound: true);
         m_Land_Restart = m_Land.FindAction("Restart", throwIfNotFound: true);
+        m_Land_DebugHP = m_Land.FindAction("Debug HP", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -354,6 +374,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Land_Unpause;
     private readonly InputAction m_Land_Quit;
     private readonly InputAction m_Land_Restart;
+    private readonly InputAction m_Land_DebugHP;
     public struct LandActions
     {
         private @PlayerControls m_Wrapper;
@@ -366,6 +387,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @Unpause => m_Wrapper.m_Land_Unpause;
         public InputAction @Quit => m_Wrapper.m_Land_Quit;
         public InputAction @Restart => m_Wrapper.m_Land_Restart;
+        public InputAction @DebugHP => m_Wrapper.m_Land_DebugHP;
         public InputActionMap Get() { return m_Wrapper.m_Land; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -399,6 +421,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Restart.started -= m_Wrapper.m_LandActionsCallbackInterface.OnRestart;
                 @Restart.performed -= m_Wrapper.m_LandActionsCallbackInterface.OnRestart;
                 @Restart.canceled -= m_Wrapper.m_LandActionsCallbackInterface.OnRestart;
+                @DebugHP.started -= m_Wrapper.m_LandActionsCallbackInterface.OnDebugHP;
+                @DebugHP.performed -= m_Wrapper.m_LandActionsCallbackInterface.OnDebugHP;
+                @DebugHP.canceled -= m_Wrapper.m_LandActionsCallbackInterface.OnDebugHP;
             }
             m_Wrapper.m_LandActionsCallbackInterface = instance;
             if (instance != null)
@@ -427,6 +452,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @Restart.started += instance.OnRestart;
                 @Restart.performed += instance.OnRestart;
                 @Restart.canceled += instance.OnRestart;
+                @DebugHP.started += instance.OnDebugHP;
+                @DebugHP.performed += instance.OnDebugHP;
+                @DebugHP.canceled += instance.OnDebugHP;
             }
         }
     }
@@ -441,5 +469,6 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnUnpause(InputAction.CallbackContext context);
         void OnQuit(InputAction.CallbackContext context);
         void OnRestart(InputAction.CallbackContext context);
+        void OnDebugHP(InputAction.CallbackContext context);
     }
 }

@@ -32,8 +32,6 @@ public class PlayerController : MonoBehaviour
     public float shortJumpHeight = 2f;
     public float longJumpHeight = 4f;
 
-    public PlayerHealth health;
-
     public float knockBackForce = 5f;
     public float knockBackTime;
     private float knockBackCounter;
@@ -59,15 +57,6 @@ public class PlayerController : MonoBehaviour
         _playerControls.Disable();
     }
 
-    void Start()
-    {
-        health.GetComponent<PlayerHealth>();
-        _animator = GetComponent<Animator>();
-        playerAudio = GetComponent<PlayerAudio>();
-
-        GameObject.FindGameObjectsWithTag("Ground");
-    }
-
     void Update()
     {
         IsGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
@@ -86,12 +75,12 @@ public class PlayerController : MonoBehaviour
         if (knockBackCounter <= 0)
         {
 
-           if(health.IsDead == false)
-          { 
+           
+           
             PlayerMovement();
             ShortJumpAnimation();
             LongJumpAnimation();
-          }
+          
        
             PlayerGravity();
         
