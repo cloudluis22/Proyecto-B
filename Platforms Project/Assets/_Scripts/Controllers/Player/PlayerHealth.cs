@@ -16,7 +16,6 @@ public class PlayerHealth : MonoBehaviour
 
     public HealthBar _healthBar;
 
-    // Start is called before the first frame update
     void Start()
     {
         currentHealth = maxHealth;
@@ -27,5 +26,17 @@ public class PlayerHealth : MonoBehaviour
     {
         currentHealth -= damage;
         _healthBar.SetHealth(currentHealth);
+    }
+    private void Update() {
+        Die();
+    }
+
+    private void Die()
+    {
+        if(currentHealth <= 0)
+        {
+           this.gameObject.GetComponent<Animator>().enabled = false;
+        }
+
     }
 }

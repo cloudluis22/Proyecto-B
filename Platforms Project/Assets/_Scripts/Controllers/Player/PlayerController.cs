@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour
     {
         _playerControls = new PlayerControls();
         _characterController = GetComponent<CharacterController>();
+        //SetRagdollParts();
     }
 
     private void OnEnable()
@@ -96,6 +97,16 @@ public class PlayerController : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(groundCheck.position, groundDistance);
     }
+
+   /* public void SetRagdollParts()
+    {
+       Collider[] colliders = this.gameObject.GetComponentsInChildren<Collider>();
+
+       foreach(Collider colls in colliders)
+       {
+           colls.isTrigger = true;
+       }
+    } */
 
     /// <summary>
     /// Método que crea el movimiento y rotación del jugador.
