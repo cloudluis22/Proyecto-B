@@ -44,11 +44,11 @@ public class PlayerCombat : MonoBehaviour
     }
 
     
-    void Update()
+   /* void Update()
     { 
           if(health.IsDead == false)
             AttackAnim();
-    }
+    }*/
 
     /// <summary>
     /// Método que reproduce la animación de ataque, tambien agrega un pequeño contador de refrescamiento para evitar abusar del click.

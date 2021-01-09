@@ -1,92 +1,42 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.UI;
 using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public Animator _animator;
-    public PlayerController playerController;
-    public PlayerCombat playerCombat;
-    public PlayerAudio playerAudio;
+    [SerializeField]
+    private int maxHealth = 20;
 
-    public Image[] hearts;
-    public Sprite fullHearts;
-    public Sprite emptyHeats;
-
-    [Range(1, 5)]
-    public int maxHealth = 3;
     private int currentHealth;
-
-    private bool isDead;
-    public bool IsDead
+    public int CurrentHealth
     {
-        get
-        {
-            return isDead;
-        }
-        set
-        {
-            isDead = value;
-        }
+        get => currentHealth;
+        set => currentHealth = value;
     }
-    
-    // Start is called before the first frame update
+
+    public HealthBar _healthBar;
+
     void Start()
     {
-        playerController.GetComponent<PlayerController>();
         currentHealth = maxHealth;
-        playerAudio = GetComponent<PlayerAudio>();
+        _healthBar.SetMaxHealth(maxHealth);
     }
 
-     void Update()
-    {     
-        for (int i = 0; i < hearts.Length; i++)
-        {
-            if (i < currentHealth)
-            {
-                hearts[i].sprite = fullHearts;
-            }
-            else
-            {
-                hearts[i].sprite = emptyHeats;
-            } 
-            
-            if (i < maxHealth)
-            {
-                hearts[i].enabled = true;
-            }
-            else
-            {
-                hearts[i].enabled = false;
-            }
-        }
-    }
-
-    /// <summary>
-    /// Método que se encargará de restarle salud al jugador una vez es atacado.
-    /// </summary>
-    public void TakeDamage(int damage, Vector3 direction)
+    public void TakeDamage(int damage)
     {
         currentHealth -= damage;
-        playerController.PlayerKnockBack(direction);
-
-       
-            playerAudio.HurtSound();
-        
-
-        if (currentHealth <= 0)
-        {
-            Die();
-        }    
+        _healthBar.SetHealth(currentHealth);
+    }
+    private void Update() {
+        Die();
     }
 
-    /// <summary>
-    /// Método que se encarga de realizar la muerte del jugador, y con el bool desactivar todas sus funciones.
-    /// </summary>
     private void Die()
     {
-        _animator.SetBool("IsDead", true);
-        isDead = true;
+        if(currentHealth <= 0)
+        {
+           this.gameObject.GetComponent<Animator>().enabled = false;
+        }
+
     }
 }

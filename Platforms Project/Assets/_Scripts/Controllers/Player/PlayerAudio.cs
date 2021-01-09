@@ -7,55 +7,62 @@ using UnityEngine.SocialPlatforms;
 
 public class PlayerAudio : MonoBehaviour
 {
-    public static AudioSource _audioSource;
+    public AudioSource _audioSource;
 
-    private AudioClip concreteFootstep1;
-    private AudioClip concreteFootstep2;
-    private AudioClip concreteFootstep3;
+    //Movimiento:
 
-    private AudioClip shortJumpSound;
-    private AudioClip punchSound;
-    private AudioClip hitSound;
-    private AudioClip hurtSound;
-
-    private AudioClip coinSound;
-
+    //Arreglo de pasos de concreto.
+    [SerializeField]
     private AudioClip[] concreteArray = new AudioClip[3];
 
+    //Variables de salto largo y corto.
+    [SerializeField]
+    private AudioClip shortJumpSound, longJumpSound;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        _audioSource = GetComponent<AudioSource>();
+    //Combate: sonidos de golpear en el aire, golpear, ser golpeado.
+    [SerializeField]
+    private AudioClip punchSound, hitSound, hurtSound;
 
-        concreteFootstep1 = Resources.Load<AudioClip>("Concrete_1");
-        concreteFootstep2 = Resources.Load<AudioClip>("Concrete_2");
-        concreteFootstep3 = Resources.Load<AudioClip>("Concrete_3");
+    //Sonido de recoger monedas.
+    [SerializeField]
+    private AudioClip coinSound;
 
-        shortJumpSound = Resources.Load<AudioClip>("Short Jump");
-        punchSound = Resources.Load<AudioClip>("Air Punch");
-        hitSound = Resources.Load<AudioClip>("Damage Effect");
-        hurtSound = Resources.Load<AudioClip>("Benny Damage");
-        coinSound = Resources.Load<AudioClip>("Pickup Coin");
+    
+    
+    [SerializeField]
+    private float longJumpMinPitch = 0.65f, longJumpMaxPitch = 1.2f;
 
-        concreteArray[0] = concreteFootstep1; concreteArray[1] = concreteFootstep2; concreteArray[2] = concreteFootstep3;
-    }
+    [SerializeField]
+    private float shortJumpMinPitch = 0.7f, shortJumpMaxPitch = 1.5f;
 
     /// <summary>
     /// Método que reproduce el sonido de los pasos, llamado por un Animator Event en la animación de caminar.
     /// </summary>
-    private void Footsteps()
+    private void Footstep()
     {
         int randomIndex = Random.Range(0, concreteArray.Length);
-        _audioSource.PlayOneShot(concreteArray[randomIndex]);
+        _audioSource.pitch = 1f;
+        _audioSource.PlayOneShot(concreteArray[randomIndex], 0.15f);
     }
 
     /// <summary>
-    /// Metodo que reproduce el sonido del salto, llamado por un Animator Event en la animación de saltar.
+    /// Método que reproduce el sonido del salto alto, llamado por un Animator Event en la animación de saltar alto.
     /// </summary>
-    private void JumpSound()
+    private void LongJumpSound()
     {
-        _audioSource.PlayOneShot(shortJumpSound);
+        float randomPitch = Random.Range(longJumpMinPitch, longJumpMaxPitch);
+        _audioSource.pitch = randomPitch;
+        _audioSource.PlayOneShot(longJumpSound, 0.2f);
+    }
+
+    /// <summary>
+    /// Método que reproduce el sonido del salto corto, llamado por un Animator Event en la animación de saltar de forma corta.
+    /// </summary>
+    private void ShortJumpSound()
+    {
+        float randomPitch = Random.Range(shortJumpMinPitch, shortJumpMaxPitch);
+        _audioSource.pitch = randomPitch;
+        _audioSource.PlayOneShot(shortJumpSound, 0.2f);
     }
 
     /// <summary>
@@ -66,16 +73,25 @@ public class PlayerAudio : MonoBehaviour
         _audioSource.PlayOneShot(coinSound);
     }
 
+   /// <summary>
+   /// Método que reproduce el sonido de el aire al golpear cada vez que el jugador decide golpear.
+   /// </summary>
     public void PunchSound()
     {
         _audioSource.PlayOneShot(punchSound);
     }
 
+    /// <summary>
+    /// Método que reproduce el sonido del golpeo una vez el puño impacta a un enemigo con éxito.
+    /// </summary>
     public void HitSound()
     {
         _audioSource.PlayOneShot(hitSound);
     }
     
+   /// <summary>
+   /// Método que reproduce el sonido de dolor si el jugador es golpeado con éxito por algún enemigo.
+   /// </summary>
     public void HurtSound()
     {
         _audioSource.PlayOneShot(hurtSound);

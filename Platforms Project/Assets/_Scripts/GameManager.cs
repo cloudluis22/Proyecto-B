@@ -8,10 +8,11 @@ public class GameManager : MonoBehaviour
 {
    private bool isPaused;
    private PlayerControls _playerControls;
+    
+   public PlayerHealth _playerHealth;
 
     private void Awake()
     {
-        Application.targetFrameRate = 60;
         _playerControls = new PlayerControls();
     }
 
@@ -25,12 +26,6 @@ public class GameManager : MonoBehaviour
         _playerControls.Disable();
     }
 
-    void Start()
-    {
-        
-    }
-
-   
     void Update()
     {
         GameExit();
@@ -38,6 +33,7 @@ public class GameManager : MonoBehaviour
         GamePause();
         GameUnpause();
         GameRestart();
+        DebugHealthTest();
     }
 
     private void GameExit()
@@ -73,5 +69,14 @@ public class GameManager : MonoBehaviour
             Scene scene = SceneManager.GetActiveScene();
             SceneManager.LoadScene(scene.name);
         }
+    }
+
+    private void DebugHealthTest()
+    {
+        if (_playerControls.Land.DebugHP.triggered)
+        {
+            int damage = 5;
+            _playerHealth.TakeDamage(damage);
+        } 
     }
 }

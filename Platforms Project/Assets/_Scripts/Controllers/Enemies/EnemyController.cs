@@ -37,7 +37,7 @@ public class EnemyController : MonoBehaviour
 
     public ParticleSystem blood;
 
-    public PlayerHealth playerHealth;
+
 
     // Start is called before the first frame update
     void Start()
@@ -81,7 +81,7 @@ public class EnemyController : MonoBehaviour
     /// </summary>
     private void EnemyAttackAnim()
     {
-        if (Time.time >= nextAttackTime && playerHealth.IsDead == false)
+        if (Time.time >= nextAttackTime)
         {
             _animator.SetTrigger("Attack");
             nextAttackTime = Time.time + 1f / attackRate;
@@ -176,7 +176,8 @@ public class EnemyController : MonoBehaviour
             Vector3 hitDirection = player.transform.position - this.transform.position;
             hitDirection = hitDirection.normalized;
            
-            player.GetComponent<PlayerHealth>().TakeDamage(attackDamage, hitDirection);
+          /*  player.GetComponent<PlayerHealth>().TakeDamage(attackDamage, hitDirection); 
+           */  
         }
     }
           

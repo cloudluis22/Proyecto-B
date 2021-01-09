@@ -1,9 +1,9 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public enum AnimationStates { standing, walking, running, punching, jumping };
+public enum AnimationStates { standing, walking, running, punching, jumping, falling};
     
 public class PlayerController : MonoBehaviour
 {
@@ -28,25 +28,24 @@ public class PlayerController : MonoBehaviour
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
     private bool IsGrounded;
-    private bool isGoingToJump;
 
     public float shortJumpHeight = 2f;
     public float longJumpHeight = 4f;
-
-    public bool _jump;
-
-    public PlayerHealth health;
 
     public float knockBackForce = 5f;
     public float knockBackTime;
     private float knockBackCounter;
 
     private bool isLanding;
+    private bool isJumping;
+
+    public float speedNumber = 6f;
 
     private void Awake()
     {
         _playerControls = new PlayerControls();
         _characterController = GetComponent<CharacterController>();
+        //SetRagdollParts();
     }
 
     private void OnEnable()
@@ -57,15 +56,6 @@ public class PlayerController : MonoBehaviour
     private void OnDisable()
     {
         _playerControls.Disable();
-    }
-
-    void Start()
-    {
-        health.GetComponent<PlayerHealth>();
-        _animator = GetComponent<Animator>();
-        playerAudio = GetComponent<PlayerAudio>();
-
-        GameObject.FindGameObjectsWithTag("Ground");
     }
 
     void Update()
@@ -86,12 +76,12 @@ public class PlayerController : MonoBehaviour
         if (knockBackCounter <= 0)
         {
 
-           if(health.IsDead == false)
-          { 
+           
+           
             PlayerMovement();
             ShortJumpAnimation();
             LongJumpAnimation();
-          }
+          
        
             PlayerGravity();
         
@@ -108,6 +98,16 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawWireSphere(groundCheck.position, groundDistance);
     }
 
+   /* public void SetRagdollParts()
+    {
+       Collider[] colliders = this.gameObject.GetComponentsInChildren<Collider>();
+
+       foreach(Collider colls in colliders)
+       {
+           colls.isTrigger = true;
+       }
+    } */
+
     /// <summary>
     /// Método que crea el movimiento y rotación del jugador.
     /// </summary>
@@ -117,7 +117,7 @@ public class PlayerController : MonoBehaviour
         Vector2 movementInput = _playerControls.Land.Move.ReadValue<Vector2>();
         Vector3 direction = new Vector3(movementInput.x, 0f, movementInput.y);
 
-        movementSpeed = movementInput.magnitude * 6f;
+        movementSpeed = movementInput.magnitude * speedNumber;
        
         if (direction.magnitude >= 0.1f && !playerCombat.isPunching && !isLanding)
         {
@@ -162,7 +162,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void ShortJumpAnimation()
     {
-       if(_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.running)
+       if(_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.running && !isJumping)
         {
             _animator.SetTrigger("ShortJump");
         }
@@ -175,6 +175,7 @@ public class PlayerController : MonoBehaviour
     public void ShortPlayerJump()
     {
         gravityVelocity.y = Mathf.Sqrt(shortJumpHeight * -2f * gravity);
+        speedNumber = 7f;
     }
 
     /// <summary>
@@ -182,9 +183,9 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void LongJumpAnimation()
     {
-        if (_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.standing)
+        if (_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.standing && !isJumping)
         {
-           
+             isJumping = true;
             _animator.SetTrigger("LongJump");
         }
 
@@ -196,6 +197,7 @@ public class PlayerController : MonoBehaviour
     public void LongPlayerJump()
     {
         gravityVelocity.y = Mathf.Sqrt(longJumpHeight * -2f * gravity);
+        speedNumber = 3f;
     }
 
 
@@ -208,6 +210,7 @@ public class PlayerController : MonoBehaviour
         _characterController.Move(direction * knockBackForce * Time.deltaTime);
     }
 
+    //Lógica de recoger monedas al entrar en contacto con ellas.
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Coin"))
@@ -226,10 +229,12 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Método que registra si el jugador ya ha aterrizado, si es así, podra continuar moviendose, llamado por un Animator Event al final de la animación del aterrizaje.
+    /// Método que registra si el jugador ya ha aterrizado, si es así, podra continuar moviendose además de poder volver a saltar. Llamado por un Animator Event al final de la animación del aterrizaje.
     /// </summary>
     public void HasLanded()
     {
+        speedNumber = 6f;
         isLanding = false;
+        isJumping = false;
     }
 }
