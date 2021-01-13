@@ -9,11 +9,12 @@ public class PlayerAudio : MonoBehaviour
 {
     public AudioSource _audioSource;
 
-    //Movimiento:
-
     //Arreglo de pasos de concreto.
     [SerializeField]
     private AudioClip[] concreteArray = new AudioClip[3];
+
+    [SerializeField]
+    private AudioClip[] grassArray;
 
     //Variables de salto largo y corto.
     [SerializeField]
@@ -27,22 +28,40 @@ public class PlayerAudio : MonoBehaviour
     [SerializeField]
     private AudioClip coinSound;
 
-    
-    
     [SerializeField]
     private float longJumpMinPitch = 0.65f, longJumpMaxPitch = 1.2f;
 
     [SerializeField]
     private float shortJumpMinPitch = 0.7f, shortJumpMaxPitch = 1.5f;
 
+    private int groundIndex;
+    int randomIndex;
+
+    private void OnControllerColliderHit(ControllerColliderHit hit) {
+       if(hit.transform.tag == "Grass")
+       {
+           Debug.Log("Pasto");
+           groundIndex = 1;
+       }
+    }
+
     /// <summary>
     /// Método que reproduce el sonido de los pasos, llamado por un Animator Event en la animación de caminar.
     /// </summary>
     private void Footstep()
     {
-        int randomIndex = Random.Range(0, concreteArray.Length);
+        switch(groundIndex){
+            case 1:
+                 randomIndex = Random.Range(0, grassArray.Length);
+                _audioSource.pitch = 1f;
+                _audioSource.PlayOneShot(grassArray[randomIndex], 0.15f);
+            break;
+        }
+
+        
+        /* randomIndex = Random.Range(0, concreteArray.Length);
         _audioSource.pitch = 1f;
-        _audioSource.PlayOneShot(concreteArray[randomIndex], 0.15f);
+        _audioSource.PlayOneShot(concreteArray[randomIndex], 0.15f);*/
     }
 
     /// <summary>

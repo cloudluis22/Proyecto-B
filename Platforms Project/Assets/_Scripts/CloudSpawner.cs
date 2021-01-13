@@ -4,22 +4,44 @@ using UnityEngine;
 
 public class CloudSpawner : MonoBehaviour
 {
-    [SerializeField]
-    private float startPosition;
-    
-    [SerializeField]
-    private float startHeight;
-
+  
     [SerializeField]
     private GameObject[] clouds;
 
     private int cloudIndex;
 
-    private float posX, posY, posZ;
+    [SerializeField]
+    private float minPosX, maxPosX, minPosY, maxPosY;
 
     void Start()
     {
-        cloudIndex = Random.Range(0, clouds.Length);
-        Instantiate(clouds[cloudIndex], transform.position = new Vector3(0, 0, 0), transform.rotation);
+        StartCoroutine(Timer());
     }
+
+    private void SpawnCloud(Vector3 cloudPosition)
+    {
+        cloudIndex = Random.Range(0, clouds.Length);
+        Instantiate(clouds[cloudIndex], cloudPosition , gameObject.transform.rotation);
+    }
+
+    private Vector3 GeneratePos()
+    {
+       float positionX = Random.Range(minPosX, maxPosX);
+       float positionY = Random.Range(minPosY, maxPosY);
+       Vector3 cloudPosition = new Vector3(positionX, positionY, this.transform.position.z);
+       return cloudPosition;
+    }
+
+    IEnumerator Timer()
+    {
+        SpawnCloud(GeneratePos());
+
+        while(true)
+        {
+            yield return new WaitForSeconds(25);
+            SpawnCloud(GeneratePos());
+        }
+        
+    }
+
 }
