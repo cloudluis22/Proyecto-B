@@ -41,11 +41,18 @@ public class PlayerController : MonoBehaviour
 
     public float speedNumber = 6f;
 
+    [SerializeField]
+    private float coinTimer, minPitch, maxPitch;
+    private float timeRemaining, currentPitch;
+
+    private bool runTimer, isHoldingWalk = false;
+
     private void Awake()
     {
         _playerControls = new PlayerControls();
         _characterController = GetComponent<CharacterController>();
-        //SetRagdollParts();
+        currentPitch = minPitch;
+        timeRemaining = coinTimer;
     }
 
     private void OnEnable()
@@ -82,13 +89,33 @@ public class PlayerController : MonoBehaviour
             ShortJumpAnimation();
             LongJumpAnimation();
           
-       
+    
             PlayerGravity();
         
         }
         else
         {
             knockBackCounter -= Time.deltaTime;
+        }
+
+        if(runTimer){
+            if(timeRemaining >= 0){
+                timeRemaining -= Time.deltaTime;
+                Debug.Log(timeRemaining + " seconds left!.");
+            }
+            else
+            {
+                currentPitch = minPitch;
+                runTimer = false;
+                timeRemaining = coinTimer;
+            }
+        }
+
+        if(_playerControls.Land.WalkStart.triggered){
+            isHoldingWalk = true;
+        }
+        else if(_playerControls.Land.WalkFinish.triggered){
+            isHoldingWalk = false;
         }
     }
 
@@ -117,7 +144,11 @@ public class PlayerController : MonoBehaviour
         Vector2 movementInput = _playerControls.Land.Move.ReadValue<Vector2>();
         Vector3 direction = new Vector3(movementInput.x, 0f, movementInput.y);
 
+        //if(_playerControls.Land.Walk.)
+
         movementSpeed = movementInput.magnitude * speedNumber;
+
+        
        
         if (direction.magnitude >= 0.1f && !playerCombat.isPunching && !isLanding)
         {
@@ -129,7 +160,13 @@ public class PlayerController : MonoBehaviour
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             _characterController.Move(moveDirection.normalized * movementSpeed * Time.deltaTime);
 
-            _animator.SetFloat("Speed", movementInput.magnitude);
+            if(isHoldingWalk){
+
+            _animator.SetFloat("Speed", 0.5f);
+
+            }else{
+                _animator.SetFloat("Speed", movementInput.magnitude);
+            }
 
             if (_animator.GetFloat("Speed") < 0.6f)
             {
@@ -215,9 +252,21 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Coin"))
         {
+            if(!runTimer){
+                runTimer = true;
+            }
+            else{
+                currentPitch += 0.1f;
+                
+                if(currentPitch >= maxPitch){
+                    currentPitch = maxPitch;
+                }
+            }
+            
             Destroy(other.gameObject);
-            playerAudio.CoinSound();
+            playerAudio.CoinSound(currentPitch);
         }
+
     }
 
     /// <summary>

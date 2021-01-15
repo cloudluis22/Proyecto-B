@@ -89,6 +89,22 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""WalkStart"",
+                    ""type"": ""Button"",
+                    ""id"": ""e9f90d97-161a-42bc-9eee-5cb0992564a4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
+                },
+                {
+                    ""name"": ""WalkFinish"",
+                    ""type"": ""Button"",
+                    ""id"": ""3ac1e0c9-641e-4bc8-8160-484d422fc50d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
                 }
             ],
             ""bindings"": [
@@ -157,6 +173,17 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""72b2a77c-2a3d-4a15-9972-04456529c1c9"",
+                    ""path"": ""<DualShockGamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Move"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
@@ -300,6 +327,28 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""action"": ""Debug HP"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""128bd337-3d81-407e-81a6-79c541cdb50b"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""WalkStart"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6bdf8171-8790-4a4e-8a72-e879c68f496a"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": ""Press(behavior=1)"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""WalkFinish"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -317,6 +366,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Land_Quit = m_Land.FindAction("Quit", throwIfNotFound: true);
         m_Land_Restart = m_Land.FindAction("Restart", throwIfNotFound: true);
         m_Land_DebugHP = m_Land.FindAction("Debug HP", throwIfNotFound: true);
+        m_Land_WalkStart = m_Land.FindAction("WalkStart", throwIfNotFound: true);
+        m_Land_WalkFinish = m_Land.FindAction("WalkFinish", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -375,6 +426,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Land_Quit;
     private readonly InputAction m_Land_Restart;
     private readonly InputAction m_Land_DebugHP;
+    private readonly InputAction m_Land_WalkStart;
+    private readonly InputAction m_Land_WalkFinish;
     public struct LandActions
     {
         private @PlayerControls m_Wrapper;
@@ -388,6 +441,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @Quit => m_Wrapper.m_Land_Quit;
         public InputAction @Restart => m_Wrapper.m_Land_Restart;
         public InputAction @DebugHP => m_Wrapper.m_Land_DebugHP;
+        public InputAction @WalkStart => m_Wrapper.m_Land_WalkStart;
+        public InputAction @WalkFinish => m_Wrapper.m_Land_WalkFinish;
         public InputActionMap Get() { return m_Wrapper.m_Land; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -424,6 +479,12 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @DebugHP.started -= m_Wrapper.m_LandActionsCallbackInterface.OnDebugHP;
                 @DebugHP.performed -= m_Wrapper.m_LandActionsCallbackInterface.OnDebugHP;
                 @DebugHP.canceled -= m_Wrapper.m_LandActionsCallbackInterface.OnDebugHP;
+                @WalkStart.started -= m_Wrapper.m_LandActionsCallbackInterface.OnWalkStart;
+                @WalkStart.performed -= m_Wrapper.m_LandActionsCallbackInterface.OnWalkStart;
+                @WalkStart.canceled -= m_Wrapper.m_LandActionsCallbackInterface.OnWalkStart;
+                @WalkFinish.started -= m_Wrapper.m_LandActionsCallbackInterface.OnWalkFinish;
+                @WalkFinish.performed -= m_Wrapper.m_LandActionsCallbackInterface.OnWalkFinish;
+                @WalkFinish.canceled -= m_Wrapper.m_LandActionsCallbackInterface.OnWalkFinish;
             }
             m_Wrapper.m_LandActionsCallbackInterface = instance;
             if (instance != null)
@@ -455,6 +516,12 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @DebugHP.started += instance.OnDebugHP;
                 @DebugHP.performed += instance.OnDebugHP;
                 @DebugHP.canceled += instance.OnDebugHP;
+                @WalkStart.started += instance.OnWalkStart;
+                @WalkStart.performed += instance.OnWalkStart;
+                @WalkStart.canceled += instance.OnWalkStart;
+                @WalkFinish.started += instance.OnWalkFinish;
+                @WalkFinish.performed += instance.OnWalkFinish;
+                @WalkFinish.canceled += instance.OnWalkFinish;
             }
         }
     }
@@ -470,5 +537,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnQuit(InputAction.CallbackContext context);
         void OnRestart(InputAction.CallbackContext context);
         void OnDebugHP(InputAction.CallbackContext context);
+        void OnWalkStart(InputAction.CallbackContext context);
+        void OnWalkFinish(InputAction.CallbackContext context);
     }
 }

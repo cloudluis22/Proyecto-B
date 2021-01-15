@@ -8,6 +8,7 @@ using UnityEngine.SocialPlatforms;
 public class PlayerAudio : MonoBehaviour
 {
     public AudioSource _audioSource;
+    public AudioSource _audioSource2;
 
     //Arreglo de pasos de concreto.
     [SerializeField]
@@ -40,7 +41,6 @@ public class PlayerAudio : MonoBehaviour
     private void OnControllerColliderHit(ControllerColliderHit hit) {
        if(hit.transform.tag == "Grass")
        {
-           Debug.Log("Pasto");
            groundIndex = 1;
        }
     }
@@ -54,7 +54,7 @@ public class PlayerAudio : MonoBehaviour
             case 1:
                  randomIndex = Random.Range(0, grassArray.Length);
                 _audioSource.pitch = 1f;
-                _audioSource.PlayOneShot(grassArray[randomIndex], 0.15f);
+                _audioSource.PlayOneShot(grassArray[randomIndex], 0.45f);
             break;
         }
 
@@ -87,9 +87,10 @@ public class PlayerAudio : MonoBehaviour
     /// <summary>
     /// Método que reproduce el sonido de la moneda cuando una es recogida, llamado por el PlayerController cuando el jugador entra en contacto con una.
     /// </summary>
-    public void CoinSound()
+    public void CoinSound(float pitch)
     {
-        _audioSource.PlayOneShot(coinSound);
+        _audioSource2.pitch = pitch;
+        _audioSource2.PlayOneShot(coinSound, 0.2f);
     }
 
    /// <summary>
