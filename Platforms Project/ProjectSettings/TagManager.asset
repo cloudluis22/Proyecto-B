@@ -4,7 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Grass
+  - Footsteps/Grass
+  - Footsteps/Wooden or Concrete
+  - Footsteps/Sand
+  - Coin
   layers:
   - Default
   - TransparentFX
@@ -17,7 +20,7 @@ TagManager:
   - Ground
   - Enemy
   - Player
-  - 
+  - Ragdoll
   - 
   - 
   - 

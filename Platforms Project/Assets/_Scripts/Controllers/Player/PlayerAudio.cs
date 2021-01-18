@@ -9,6 +9,7 @@ public class PlayerAudio : MonoBehaviour
 {
     public AudioSource _audioSource;
     public AudioSource _audioSource2;
+    public AudioSource _audioSource3;
 
     //Arreglo de pasos de concreto.
     [SerializeField]
@@ -16,6 +17,9 @@ public class PlayerAudio : MonoBehaviour
 
     [SerializeField]
     private AudioClip[] grassArray;
+    
+    [SerializeField]
+    private AudioClip[] sandArray;
 
     //Variables de salto largo y corto.
     [SerializeField]
@@ -23,7 +27,10 @@ public class PlayerAudio : MonoBehaviour
 
     //Combate: sonidos de golpear en el aire, golpear, ser golpeado.
     [SerializeField]
-    private AudioClip punchSound, hitSound, hurtSound;
+    private AudioClip punchSound, hitSound, deathSound;
+
+    [SerializeField]
+    private AudioClip[] hurtSounds;
 
     //Sonido de recoger monedas.
     [SerializeField]
@@ -39,9 +46,16 @@ public class PlayerAudio : MonoBehaviour
     int randomIndex;
 
     private void OnControllerColliderHit(ControllerColliderHit hit) {
-       if(hit.transform.tag == "Grass")
+       if(hit.transform.tag == "Footsteps/Grass")
        {
            groundIndex = 1;
+       }
+       else if(hit.transform.tag == "Footsteps/Wooden or Concrete")
+       {
+           groundIndex = 2;
+       }
+       else if(hit.transform.tag == "Footsteps/Sand"){
+           groundIndex = 3;
        }
     }
 
@@ -53,15 +67,20 @@ public class PlayerAudio : MonoBehaviour
         switch(groundIndex){
             case 1:
                  randomIndex = Random.Range(0, grassArray.Length);
-                _audioSource.pitch = 1f;
-                _audioSource.PlayOneShot(grassArray[randomIndex], 0.45f);
+                _audioSource3.PlayOneShot(grassArray[randomIndex], 0.45f);
+            break;
+
+            case 2:
+                 randomIndex = Random.Range(0, concreteArray.Length);
+                _audioSource3.PlayOneShot(concreteArray[randomIndex], 0.45f);
+            break;
+
+            case 3:
+                randomIndex = Random.Range(0, sandArray.Length);
+                _audioSource3.PlayOneShot(sandArray[randomIndex], 0.45f);
             break;
         }
 
-        
-        /* randomIndex = Random.Range(0, concreteArray.Length);
-        _audioSource.pitch = 1f;
-        _audioSource.PlayOneShot(concreteArray[randomIndex], 0.15f);*/
     }
 
     /// <summary>
@@ -114,6 +133,14 @@ public class PlayerAudio : MonoBehaviour
    /// </summary>
     public void HurtSound()
     {
-        _audioSource.PlayOneShot(hurtSound);
+        int randomIndex = Random.Range(0, hurtSounds.Length);
+        _audioSource.pitch = 1f;
+        _audioSource.PlayOneShot(hurtSounds[randomIndex]);
+    }
+
+    public void DieSound()
+    {
+        _audioSource.pitch = 1f;
+        _audioSource.PlayOneShot(deathSound);
     }
 }

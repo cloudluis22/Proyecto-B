@@ -45,10 +45,13 @@ public class PlayerController : MonoBehaviour
     private float coinTimer, minPitch, maxPitch;
     private float timeRemaining, currentPitch;
 
-    private bool runTimer, isHoldingWalk = false;
+    private bool runTimer, isHoldingWalk = false, takeFallDamage;
+
+    private PlayerHealth _playerHealth;
 
     private void Awake()
     {
+        _playerHealth = GetComponent<PlayerHealth>();
         _playerControls = new PlayerControls();
         _characterController = GetComponent<CharacterController>();
         currentPitch = minPitch;
@@ -73,6 +76,11 @@ public class PlayerController : MonoBehaviour
         {
             gravityVelocity.y = -2f;
             _animator.SetBool("IsGrounded", true);
+
+            if(takeFallDamage){
+                takeFallDamage = false;
+                _playerHealth.TakeDamage(5);
+            }
         }
 
         if (!IsGrounded)
@@ -117,6 +125,8 @@ public class PlayerController : MonoBehaviour
         else if(_playerControls.Land.WalkFinish.triggered){
             isHoldingWalk = false;
         }
+
+        FallDistance();
     }
 
     private void OnDrawGizmos()
@@ -148,6 +158,14 @@ public class PlayerController : MonoBehaviour
 
         movementSpeed = movementInput.magnitude * speedNumber;
 
+         if(isHoldingWalk){
+
+            _animator.SetFloat("Speed", 0.5f);
+             movementSpeed = 0.5f * speedNumber;   
+            }else{
+                _animator.SetFloat("Speed", movementInput.magnitude);   
+            }
+
         
        
         if (direction.magnitude >= 0.1f && !playerCombat.isPunching && !isLanding)
@@ -160,13 +178,7 @@ public class PlayerController : MonoBehaviour
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             _characterController.Move(moveDirection.normalized * movementSpeed * Time.deltaTime);
 
-            if(isHoldingWalk){
-
-            _animator.SetFloat("Speed", 0.5f);
-
-            }else{
-                _animator.SetFloat("Speed", movementInput.magnitude);
-            }
+           
 
             if (_animator.GetFloat("Speed") < 0.6f)
             {
@@ -286,4 +298,13 @@ public class PlayerController : MonoBehaviour
         isLanding = false;
         isJumping = false;
     }
+
+    public void FallDistance(){
+
+        if(gravityVelocity.y < -10){
+            takeFallDamage = true;
+        }
+
+    }
+
 }
