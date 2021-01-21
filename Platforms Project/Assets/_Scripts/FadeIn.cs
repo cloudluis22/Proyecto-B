@@ -21,4 +21,8 @@ public class FadeIn : MonoBehaviour
     {
         blackFade.CrossFadeAlpha(0, fadeLenght, false);
     }
+
+    public void FadeOutEffect(){
+        blackFade.CrossFadeAlpha(1, fadeLenght, false);
+    }
 }

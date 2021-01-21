@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,9 +12,17 @@ public class GameManager : MonoBehaviour
     
    public PlayerHealth _playerHealth;
 
+   public Image pauseIcon;
+
     private void Awake()
     {
         _playerControls = new PlayerControls();
+        pauseIcon.enabled = false;
+
+    }
+
+    private void Start() {
+        Cursor.visible = false;
     }
 
     private void OnEnable()
@@ -31,7 +40,6 @@ public class GameManager : MonoBehaviour
         GameExit();
         
         GamePause();
-        GameUnpause();
         GameRestart();
         DebugHealthTest();
     }
@@ -46,19 +54,16 @@ public class GameManager : MonoBehaviour
 
     private void GamePause()
     {
-        if (_playerControls.Land.Pause.triggered)
+        if (_playerControls.Land.Pause.triggered && !isPaused)
         {
             Time.timeScale = 0;
             isPaused = true;
+            pauseIcon.enabled = true;
         }
-    }
-
-    private void GameUnpause()
-    {
-        if (_playerControls.Land.Unpause.triggered && isPaused == true)
-        {
-            Time.timeScale = 1;
+        else if(_playerControls.Land.Pause.triggered && isPaused){
+            Time.timeScale = 1f;
             isPaused = false;
+            pauseIcon.enabled = false;
         }
     }
 

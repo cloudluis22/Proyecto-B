@@ -28,7 +28,7 @@ public class CloudSpawner : MonoBehaviour
     {
        float positionX = Random.Range(minPosX, maxPosX);
        float positionY = Random.Range(minPosY, maxPosY);
-       Vector3 cloudPosition = new Vector3(positionX, positionY, this.transform.position.z);
+       Vector3 cloudPosition = new Vector3( this.transform.position.x, positionY, this.transform.position.z);
        return cloudPosition;
     }
 

@@ -42,6 +42,9 @@ public class PlayerAudio : MonoBehaviour
     [SerializeField]
     private float shortJumpMinPitch = 0.7f, shortJumpMaxPitch = 1.5f;
 
+    [SerializeField]
+    private AudioClip impaleSound;
+
     private int groundIndex;
     int randomIndex;
 
@@ -67,17 +70,17 @@ public class PlayerAudio : MonoBehaviour
         switch(groundIndex){
             case 1:
                  randomIndex = Random.Range(0, grassArray.Length);
-                _audioSource3.PlayOneShot(grassArray[randomIndex], 0.45f);
+                _audioSource3.PlayOneShot(grassArray[randomIndex], 0.65f);
             break;
 
             case 2:
                  randomIndex = Random.Range(0, concreteArray.Length);
-                _audioSource3.PlayOneShot(concreteArray[randomIndex], 0.45f);
+                _audioSource3.PlayOneShot(concreteArray[randomIndex], 0.25f);
             break;
 
             case 3:
                 randomIndex = Random.Range(0, sandArray.Length);
-                _audioSource3.PlayOneShot(sandArray[randomIndex], 0.45f);
+                _audioSource3.PlayOneShot(sandArray[randomIndex], 0.65f);
             break;
         }
 
@@ -109,7 +112,7 @@ public class PlayerAudio : MonoBehaviour
     public void CoinSound(float pitch)
     {
         _audioSource2.pitch = pitch;
-        _audioSource2.PlayOneShot(coinSound, 0.2f);
+        _audioSource2.PlayOneShot(coinSound, 0.1f);
     }
 
    /// <summary>
@@ -142,5 +145,10 @@ public class PlayerAudio : MonoBehaviour
     {
         _audioSource.pitch = 1f;
         _audioSource.PlayOneShot(deathSound);
+    }
+
+    public void ImpaleSound(){
+        _audioSource3.pitch = 1f;
+        _audioSource.PlayOneShot(impaleSound, 0.85f);
     }
 }

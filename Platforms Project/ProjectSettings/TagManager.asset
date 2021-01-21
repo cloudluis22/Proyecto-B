@@ -8,6 +8,7 @@ TagManager:
   - Footsteps/Wooden or Concrete
   - Footsteps/Sand
   - Coin
+  - Spikes
   layers:
   - Default
   - TransparentFX

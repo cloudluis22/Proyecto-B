@@ -36,6 +36,11 @@ public class PlayerHealth : MonoBehaviour
         _healthBar.SetMaxHealth(maxHealth);
         ragdollParts = transform.GetComponentsInChildren<Rigidbody>();
         SetRagdoll(false);
+
+        foreach(Rigidbody rb in ragdollParts){
+            rb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        }
+
     }
 
      public void SetRagdoll(bool enabled){
@@ -44,9 +49,10 @@ public class PlayerHealth : MonoBehaviour
             bool isKinematic = !enabled;
             foreach(Rigidbody rb in ragdollParts){
             rb.isKinematic = isKinematic;
-        }
-
-        
+            
+            if(enabled)
+            rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
+        }  
     }
 
     public void TakeDamage(int damage)
@@ -66,5 +72,8 @@ public class PlayerHealth : MonoBehaviour
            _animator.SetBool("IsDead", true);
            SetRagdoll(true);
            _playerAudio.DieSound();
+           this.gameObject.GetComponent<PlayerController>().enabled = false;
+           
     }
+
 }

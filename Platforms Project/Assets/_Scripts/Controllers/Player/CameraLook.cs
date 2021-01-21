@@ -33,5 +33,6 @@ public class CameraLook : MonoBehaviour
         Vector2 delta = _playerControls.Land.Look.ReadValue<Vector2>();
         _cinemachine.m_XAxis.Value += delta.x * lookSpeed * 200 * Time.deltaTime;
         _cinemachine.m_YAxis.Value += delta.y * lookSpeed * Time.deltaTime;
+        _cinemachine.m_YAxis.m_InvertInput = true;
     }
 }

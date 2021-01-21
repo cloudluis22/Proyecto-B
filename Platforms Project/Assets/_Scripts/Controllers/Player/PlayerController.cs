@@ -48,10 +48,15 @@ public class PlayerController : MonoBehaviour
     private bool runTimer, isHoldingWalk = false, takeFallDamage;
 
     private PlayerHealth _playerHealth;
+    private PlayerAudio _playerAudio;
+
+    [SerializeField]
+    private ParticleSystem blood;
 
     private void Awake()
     {
         _playerHealth = GetComponent<PlayerHealth>();
+        _playerAudio = GetComponent<PlayerAudio>();
         _playerControls = new PlayerControls();
         _characterController = GetComponent<CharacterController>();
         currentPitch = minPitch;
@@ -213,6 +218,7 @@ public class PlayerController : MonoBehaviour
     {
        if(_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.running && !isJumping)
         {
+            isJumping = true;
             _animator.SetTrigger("ShortJump");
         }
         
@@ -269,7 +275,7 @@ public class PlayerController : MonoBehaviour
             }
             else{
                 currentPitch += 0.1f;
-                
+                timeRemaining = coinTimer;
                 if(currentPitch >= maxPitch){
                     currentPitch = maxPitch;
                 }
@@ -277,6 +283,12 @@ public class PlayerController : MonoBehaviour
             
             Destroy(other.gameObject);
             playerAudio.CoinSound(currentPitch);
+        }
+
+        if(other.gameObject.CompareTag("Spikes")){
+            _playerHealth.TakeDamage(100);
+            _playerAudio.ImpaleSound();
+            blood.Play();
         }
 
     }
@@ -301,7 +313,7 @@ public class PlayerController : MonoBehaviour
 
     public void FallDistance(){
 
-        if(gravityVelocity.y < -10){
+        if(gravityVelocity.y < -20){
             takeFallDamage = true;
         }
 
