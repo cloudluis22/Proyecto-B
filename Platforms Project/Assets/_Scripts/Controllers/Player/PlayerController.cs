@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public enum AnimationStates { standing, walking, running, punching, jumping, falling};
+public enum AnimationStates { standing, walking, running, punching, jumping, falling, crouching, crouchWalking};
     
 public class PlayerController : MonoBehaviour
 {
@@ -32,14 +32,10 @@ public class PlayerController : MonoBehaviour
     public float shortJumpHeight = 2f;
     public float longJumpHeight = 4f;
 
-    public float knockBackForce = 5f;
-    public float knockBackTime;
-    private float knockBackCounter;
-
     private bool isLanding;
     private bool isJumping;
 
-    public float speedNumber = 6f;
+    private float speedNumber;
 
     [SerializeField]
     private float coinTimer, minPitch, maxPitch;
@@ -53,6 +49,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private ParticleSystem blood;
 
+    private bool isCrouched;
+
+    [SerializeField]
+    private float crouchSpeed = 2, defaultSpeed = 8;
+
     private void Awake()
     {
         _playerHealth = GetComponent<PlayerHealth>();
@@ -61,6 +62,8 @@ public class PlayerController : MonoBehaviour
         _characterController = GetComponent<CharacterController>();
         currentPitch = minPitch;
         timeRemaining = coinTimer;
+
+        speedNumber = defaultSpeed;
     }
 
     private void OnEnable()
@@ -92,24 +95,11 @@ public class PlayerController : MonoBehaviour
         {
             _animator.SetBool("IsGrounded", false);
         }
-
-        if (knockBackCounter <= 0)
-        {
-
-           
            
             PlayerMovement();
             ShortJumpAnimation();
             LongJumpAnimation();
-          
-    
             PlayerGravity();
-        
-        }
-        else
-        {
-            knockBackCounter -= Time.deltaTime;
-        }
 
         if(runTimer){
             if(timeRemaining >= 0){
@@ -132,6 +122,7 @@ public class PlayerController : MonoBehaviour
         }
 
         FallDistance();
+        PlayerCrouching();
     }
 
     private void OnDrawGizmos()
@@ -163,18 +154,16 @@ public class PlayerController : MonoBehaviour
 
         movementSpeed = movementInput.magnitude * speedNumber;
 
-         if(isHoldingWalk){
+        if (direction.magnitude >= 0.1f && !playerCombat.isPunching && !isLanding)
+        {
+
+            if(isHoldingWalk){
 
             _animator.SetFloat("Speed", 0.5f);
              movementSpeed = 0.5f * speedNumber;   
             }else{
                 _animator.SetFloat("Speed", movementInput.magnitude);   
             }
-
-        
-       
-        if (direction.magnitude >= 0.1f && !playerCombat.isPunching && !isLanding)
-        {
             
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
             float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, smoothTurnTime);
@@ -187,17 +176,32 @@ public class PlayerController : MonoBehaviour
 
             if (_animator.GetFloat("Speed") < 0.6f)
             {
-                _animationStates = AnimationStates.walking;
+                if(!isCrouched){
+                    _animationStates = AnimationStates.walking;
+                }
+                else
+                    _animationStates = AnimationStates.crouching;
             }
             else if (_animator.GetFloat("Speed") > 0.6f)
             {
-                _animationStates = AnimationStates.running;
+                if(!isCrouched){
+                    _animationStates = AnimationStates.running;
+                }
+                else{
+                    _animationStates = AnimationStates.crouchWalking;
+                }
             }
         }
         else
         {
-            _animator.SetFloat("Speed", 0f);
-            _animationStates = AnimationStates.standing;
+            _animator.SetFloat("Speed", 0f, 0.1f, Time.deltaTime);
+            
+            if(!isCrouched){
+                _animationStates = AnimationStates.standing;
+            }
+            else{
+                _animationStates = AnimationStates.crouching;
+            }
         }
 
     }
@@ -255,16 +259,6 @@ public class PlayerController : MonoBehaviour
         speedNumber = 3f;
     }
 
-
-    /// <summary>
-    /// Método que ejecuta el retroceso del jugador al ser dañado
-    /// </summary>
-    /// <param name="direction">Dirección a la que sera lanzado el jugador al ser dañado por un enemigo.</param>
-    public void PlayerKnockBack(Vector3 direction)
-    {
-        _characterController.Move(direction * knockBackForce * Time.deltaTime);
-    }
-
     //Lógica de recoger monedas al entrar en contacto con ellas.
     private void OnTriggerEnter(Collider other)
     {
@@ -311,12 +305,44 @@ public class PlayerController : MonoBehaviour
         isJumping = false;
     }
 
+    /// <summary>
+    /// Calcula el daño de caída del jugador.
+    /// </summary>
     public void FallDistance(){
 
         if(gravityVelocity.y < -20){
             takeFallDamage = true;
         }
 
+    }
+
+    /// <summary>
+    /// Método que realiza la acciíon de agacharse de Benny.
+    /// </summary>
+    private void PlayerCrouching(){
+
+        if(_playerControls.Land.Crouch.triggered){
+            
+            if(!isCrouched){
+                
+                if(_animationStates == AnimationStates.standing){
+                    isCrouched = true;
+                    _animator.SetBool("IsCrouched", true);
+                    speedNumber = crouchSpeed;
+                }
+             
+            }
+            else{
+                
+                if(_animationStates != AnimationStates.crouchWalking){
+                    isCrouched = false;
+                    _animator.SetBool("IsCrouched", false);
+                    speedNumber = defaultSpeed;
+                } 
+                
+            }
+             
+        }
     }
 
 }

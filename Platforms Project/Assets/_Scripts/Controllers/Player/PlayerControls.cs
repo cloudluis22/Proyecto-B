@@ -105,6 +105,30 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": ""Press""
+                },
+                {
+                    ""name"": ""Crouch"",
+                    ""type"": ""Button"",
+                    ""id"": ""ca6b77c9-c333-443a-98be-22e65ab2dc66"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
+                },
+                {
+                    ""name"": ""PickUp"",
+                    ""type"": ""Button"",
+                    ""id"": ""b69fb3e7-ac2a-4c65-bd3c-3bd17581e79c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
+                },
+                {
+                    ""name"": ""GetWeapon"",
+                    ""type"": ""Button"",
+                    ""id"": ""037dc8f5-934d-4d1a-b80b-566b07d9c8c3"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Press""
                 }
             ],
             ""bindings"": [
@@ -353,7 +377,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""128bd337-3d81-407e-81a6-79c541cdb50b"",
-                    ""path"": ""<Keyboard>/ctrl"",
+                    ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -364,11 +388,44 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""6bdf8171-8790-4a4e-8a72-e879c68f496a"",
-                    ""path"": ""<Keyboard>/ctrl"",
+                    ""path"": ""<Keyboard>/leftShift"",
                     ""interactions"": ""Press(behavior=1)"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""WalkFinish"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""49b84398-929a-4153-aa96-7998d621816c"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Crouch"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""20c04830-3db1-4f06-838d-3b6b4f54e65b"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PickUp"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8938984c-b089-4b12-96af-68e9fb52c912"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""GetWeapon"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -390,6 +447,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Land_DebugHP = m_Land.FindAction("Debug HP", throwIfNotFound: true);
         m_Land_WalkStart = m_Land.FindAction("WalkStart", throwIfNotFound: true);
         m_Land_WalkFinish = m_Land.FindAction("WalkFinish", throwIfNotFound: true);
+        m_Land_Crouch = m_Land.FindAction("Crouch", throwIfNotFound: true);
+        m_Land_PickUp = m_Land.FindAction("PickUp", throwIfNotFound: true);
+        m_Land_GetWeapon = m_Land.FindAction("GetWeapon", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -450,6 +510,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Land_DebugHP;
     private readonly InputAction m_Land_WalkStart;
     private readonly InputAction m_Land_WalkFinish;
+    private readonly InputAction m_Land_Crouch;
+    private readonly InputAction m_Land_PickUp;
+    private readonly InputAction m_Land_GetWeapon;
     public struct LandActions
     {
         private @PlayerControls m_Wrapper;
@@ -465,6 +528,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @DebugHP => m_Wrapper.m_Land_DebugHP;
         public InputAction @WalkStart => m_Wrapper.m_Land_WalkStart;
         public InputAction @WalkFinish => m_Wrapper.m_Land_WalkFinish;
+        public InputAction @Crouch => m_Wrapper.m_Land_Crouch;
+        public InputAction @PickUp => m_Wrapper.m_Land_PickUp;
+        public InputAction @GetWeapon => m_Wrapper.m_Land_GetWeapon;
         public InputActionMap Get() { return m_Wrapper.m_Land; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -507,6 +573,15 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @WalkFinish.started -= m_Wrapper.m_LandActionsCallbackInterface.OnWalkFinish;
                 @WalkFinish.performed -= m_Wrapper.m_LandActionsCallbackInterface.OnWalkFinish;
                 @WalkFinish.canceled -= m_Wrapper.m_LandActionsCallbackInterface.OnWalkFinish;
+                @Crouch.started -= m_Wrapper.m_LandActionsCallbackInterface.OnCrouch;
+                @Crouch.performed -= m_Wrapper.m_LandActionsCallbackInterface.OnCrouch;
+                @Crouch.canceled -= m_Wrapper.m_LandActionsCallbackInterface.OnCrouch;
+                @PickUp.started -= m_Wrapper.m_LandActionsCallbackInterface.OnPickUp;
+                @PickUp.performed -= m_Wrapper.m_LandActionsCallbackInterface.OnPickUp;
+                @PickUp.canceled -= m_Wrapper.m_LandActionsCallbackInterface.OnPickUp;
+                @GetWeapon.started -= m_Wrapper.m_LandActionsCallbackInterface.OnGetWeapon;
+                @GetWeapon.performed -= m_Wrapper.m_LandActionsCallbackInterface.OnGetWeapon;
+                @GetWeapon.canceled -= m_Wrapper.m_LandActionsCallbackInterface.OnGetWeapon;
             }
             m_Wrapper.m_LandActionsCallbackInterface = instance;
             if (instance != null)
@@ -544,6 +619,15 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @WalkFinish.started += instance.OnWalkFinish;
                 @WalkFinish.performed += instance.OnWalkFinish;
                 @WalkFinish.canceled += instance.OnWalkFinish;
+                @Crouch.started += instance.OnCrouch;
+                @Crouch.performed += instance.OnCrouch;
+                @Crouch.canceled += instance.OnCrouch;
+                @PickUp.started += instance.OnPickUp;
+                @PickUp.performed += instance.OnPickUp;
+                @PickUp.canceled += instance.OnPickUp;
+                @GetWeapon.started += instance.OnGetWeapon;
+                @GetWeapon.performed += instance.OnGetWeapon;
+                @GetWeapon.canceled += instance.OnGetWeapon;
             }
         }
     }
@@ -561,5 +645,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnDebugHP(InputAction.CallbackContext context);
         void OnWalkStart(InputAction.CallbackContext context);
         void OnWalkFinish(InputAction.CallbackContext context);
+        void OnCrouch(InputAction.CallbackContext context);
+        void OnPickUp(InputAction.CallbackContext context);
+        void OnGetWeapon(InputAction.CallbackContext context);
     }
 }

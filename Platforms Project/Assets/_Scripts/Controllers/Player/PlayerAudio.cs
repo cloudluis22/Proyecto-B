@@ -141,12 +141,18 @@ public class PlayerAudio : MonoBehaviour
         _audioSource.PlayOneShot(hurtSounds[randomIndex]);
     }
 
+/// <summary>
+///  Método que reproduce el sonido de muerte del jugador.
+/// </summary>
     public void DieSound()
     {
         _audioSource.pitch = 1f;
         _audioSource.PlayOneShot(deathSound);
     }
 
+/// <summary>
+/// Sonido del impalamiento.
+/// </summary>
     public void ImpaleSound(){
         _audioSource3.pitch = 1f;
         _audioSource.PlayOneShot(impaleSound, 0.85f);
