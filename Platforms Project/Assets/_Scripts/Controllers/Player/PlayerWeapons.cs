@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum CombatStates {idle, moving, attacking, none};
+
 public class PlayerWeapons : MonoBehaviour
 {
     public Animator _animator;
@@ -27,7 +29,9 @@ public class PlayerWeapons : MonoBehaviour
 
     private GameObject currentWeapon;
 
-    bool hasWeapon;
+    bool hasWeapon, holdsWeapon, canEquipWeapon;
+
+    CombatStates _combatStates;
 
     private void Awake() {
         _playerControls = new PlayerControls();
@@ -43,16 +47,18 @@ public class PlayerWeapons : MonoBehaviour
 
     private void Start() {
         GenerateWeaponPositions();
+        _combatStates = CombatStates.none;
     }
 
     private void Update() {
         EquipWeapon();
+        CheckMovement();
     }
 
     /// <summary>
     /// Método que se encarga de instanciar el arma para Benny.
     /// </summary>
-    /// <param name="index"> Según el número del índice, el arma correspondiente. </param>
+    /// <param name="index"> Según el número del índice, el arma correspondiente.</param>
     public void InstantiateWeapon(int index){
 
         switch(index){
@@ -62,6 +68,7 @@ public class PlayerWeapons : MonoBehaviour
                 bate.transform.localEulerAngles = bateRotation;
                 bate.transform.localPosition = batPosition;
                 hasWeapon = true;
+                canEquipWeapon = true;
                 currentWeapon = bate;
                 break;
         }
@@ -89,16 +96,64 @@ public class PlayerWeapons : MonoBehaviour
         if(_playerControls.Land.GetWeapon.triggered){
             
             if(hasWeapon){
-                _animator.SetBool("Holds Weapon", true);
+
+                if(canEquipWeapon){
+
+                    if(_animator.GetFloat("Speed") <= 0.1f){
+                    
+                        _animator.SetBool("Holds Weapon", true);
+                        holdsWeapon = true;
+                        canEquipWeapon = false;
+
+                    }
+                }
+                else{
+
+                    if(_animator.GetFloat("Speed") <= 0.1f){
+                    
+                        _animator.SetBool("Holds Weapon", false);
+                        holdsWeapon = false;
+                        canEquipWeapon = true;
+
+                    }
+
+                }
             }
-
         }
-
     }
 
+
+    /// <summary>
+    /// Método que se encarga de tomar el arma, llamado por un Animator Event si EquipWeapon se ejecuta correctamente.
+    /// </summary>
     private void TakeWeapon(){
+        
         currentWeapon.transform.parent = hand.transform;
         currentWeapon.transform.localEulerAngles = bateHandRotation;
         currentWeapon.transform.localPosition = bateHandPosition;
+        
+    }
+
+    private void SaveWeapon(){
+
+          currentWeapon.transform.parent = back.transform;
+          currentWeapon.transform.localEulerAngles = bateRotation;
+          currentWeapon.transform.localPosition = batPosition;
+
+    }
+
+    private void CheckMovement(){
+        
+        if(holdsWeapon){
+
+            _combatStates = CombatStates.idle;
+
+            if(_animator.GetFloat("Speed") >= 0.01f){
+                _combatStates = CombatStates.moving;
+            }
+            else{
+                _combatStates = CombatStates.idle;
+            }
+        }
     }
 }

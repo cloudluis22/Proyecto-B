@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public enum AnimationStates { standing, walking, running, punching, jumping, falling, crouching, crouchWalking};
+public enum AnimationStates { standing, walking, running, punching, jumping, falling, crouching, crouchWalking, attackIdle, attackMoving, attacking};
     
 public class PlayerController : MonoBehaviour
 {
