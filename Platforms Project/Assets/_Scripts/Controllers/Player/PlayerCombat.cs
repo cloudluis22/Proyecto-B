@@ -10,6 +10,12 @@ public class PlayerCombat : MonoBehaviour
     public PlayerAudio _playerAudio;
 
     bool holdsWeapon;
+    int comboIndex = 0;
+    bool runTimer;
+    float timer = 0;
+
+    [SerializeField]
+    float maxTime = 1.5f;
 
     private void Awake()
     {
@@ -31,21 +37,49 @@ public class PlayerCombat : MonoBehaviour
     
     private void Update() {
         PlayerAttack();
+        Debug.Log(comboIndex);
     }
 
     public void PlayerAttack(){
 
         if(_playerControls.Combat.Attack.triggered){
 
-            Debug.Log("Ataque presionado");
-            Debug.Log(_animator.GetBool("Holds Weapon"));
-            Debug.Log(_animator.GetFloat("Speed"));
-
             if(_animator.GetBool("Holds Weapon") && _animator.GetFloat("Speed") < 0.01f){
-                _animator.SetTrigger("Melee 1");
+                
+                switch(comboIndex){
+
+                    case 0:
+                        _animator.SetTrigger("Melee 1");
+                        comboIndex++;
+                        runTimer = true;
+                    break;
+                        
+                    case 1:
+                        _animator.SetTrigger("Melee 2");
+                        comboIndex++;
+                        timer = 0;
+                    break;
+
+                    case 2:
+                        _animator.SetTrigger("Melee 3");
+                    break;
+                }
+                
             }
-   
-        } 
+
+        }
+
+        if(runTimer){
+
+            timer += Time.deltaTime;
+
+            if(timer >= maxTime){
+                timer = 0;
+                comboIndex = 0;
+                runTimer = false;
+            }
+
+        }
         
     }
  
