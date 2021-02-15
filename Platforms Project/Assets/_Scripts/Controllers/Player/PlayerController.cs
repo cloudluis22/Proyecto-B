@@ -154,7 +154,7 @@ public class PlayerController : MonoBehaviour
 
         movementSpeed = movementInput.magnitude * speedNumber;
 
-        if (direction.magnitude >= 0.1f && !playerCombat.isPunching && !isLanding)
+        if (direction.magnitude >= 0.1f && !isLanding)
         {
 
             if(isHoldingWalk){

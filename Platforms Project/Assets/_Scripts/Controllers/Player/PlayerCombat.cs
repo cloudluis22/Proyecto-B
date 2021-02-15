@@ -7,20 +7,9 @@ public class PlayerCombat : MonoBehaviour
 {
     public Animator _animator;
     private PlayerControls _playerControls;
-    public PlayerController playerController;
+    public PlayerAudio _playerAudio;
 
-    public float attackRate = 2f;
-    private float nextAttackTime;
-    public Transform attackPoint;
-    public float attackRange = 0.5f;
-    public LayerMask enemyLayer;
-
-    public int attackDamage = 1;
-    public bool isPunching;
-
-    public PlayerHealth health;
-
-    public PlayerAudio playerAudio;
+    bool holdsWeapon;
 
     private void Awake()
     {
@@ -31,6 +20,7 @@ public class PlayerCombat : MonoBehaviour
     private void OnEnable()
     {
         _playerControls.Enable();
+        _animator.GetComponent<Animator>();
     }
 
     private void OnDisable()
@@ -38,56 +28,25 @@ public class PlayerCombat : MonoBehaviour
         _playerControls.Disable();
     }
 
-    void Start()
-    {
-        health.GetComponent<PlayerHealth>();
-    }
-
     
-   /* void Update()
-    { 
-          if(health.IsDead == false)
-            AttackAnim();
-    }*/
-
-    /// <summary>
-    /// Método que reproduce la animación de ataque, tambien agrega un pequeño contador de refrescamiento para evitar abusar del click.
-    /// </summary>
-    public void AttackAnim()
-    {
-            if (Time.time >= nextAttackTime)
-            {
-                if (_playerControls.Land.Attack.triggered && playerController._animationStates == AnimationStates.standing)
-                {
-                    _animator.SetTrigger("Punch");
-                    nextAttackTime = Time.time + 1f / attackRate;
-                    isPunching = true;
-                }
-            }  
+    private void Update() {
+        PlayerAttack();
     }
 
-    private void IsNotPunchingAnymore()
-    {
-        isPunching = false;
+    public void PlayerAttack(){
+
+        if(_playerControls.Combat.Attack.triggered){
+
+            Debug.Log("Ataque presionado");
+            Debug.Log(_animator.GetBool("Holds Weapon"));
+            Debug.Log(_animator.GetFloat("Speed"));
+
+            if(_animator.GetBool("Holds Weapon") && _animator.GetFloat("Speed") < 0.01f){
+                _animator.SetTrigger("Melee 1");
+            }
+   
+        } 
+        
     }
-
-    /// <summary>
-    /// Método que se encarga de realizar daño a los enemigos en un cierto rango de ataque.
-    /// </summary>
-    public void PlayerAttack()
-    {
-        Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, attackRange, enemyLayer);
-
-        foreach(Collider enemy in hitEnemies)
-        {
-            Debug.Log("Benny hit " + enemy.name + " and caused " + attackDamage + " damage");
-            enemy.GetComponent<EnemyController>().TakeDamage(attackDamage);
-            playerAudio.HitSound();
-        }
-       
-    }
-
+ 
 }
-
-
-

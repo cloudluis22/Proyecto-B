@@ -920,7 +920,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 451568957}
-  m_LocalRotation: {x: 0.013329794, y: 0.000000017263613, z: -2.3014081e-10, w: 0.9999112}
+  m_LocalRotation: {x: 0.013329794, y: -0.000000017188095, z: 2.2913417e-10, w: 0.9999112}
   m_LocalPosition: {x: -456.82343, y: -296.8081, z: -152.5989}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -1091,7 +1091,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 521942132}
-  m_LocalRotation: {x: 0.013329792, y: 0.000000017263613, z: -2.3014084e-10, w: 0.9999112}
+  m_LocalRotation: {x: 0.013329771, y: -0.000000017188095, z: 2.2913378e-10, w: 0.9999112}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -5388,17 +5388,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 1028077357157007171}
-  playerController: {fileID: 1086355625032290396}
-  attackRate: 2
-  attackPoint: {fileID: 0}
-  attackRange: 0.5
-  enemyLayer:
-    serializedVersion: 2
-    m_Bits: 0
-  attackDamage: 1
-  isPunching: 0
-  health: {fileID: 1086355625032290397}
-  playerAudio: {fileID: 1086355625032290399}
+  _playerAudio: {fileID: 0}
 --- !u!114 &1086355625032290399
 MonoBehaviour:
   m_ObjectHideFlags: 0
