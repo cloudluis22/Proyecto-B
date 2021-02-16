@@ -44,7 +44,6 @@ public class PlayerController : MonoBehaviour
     private bool runTimer, isHoldingWalk = false, takeFallDamage;
 
     private PlayerHealth _playerHealth;
-    private PlayerAudio _playerAudio;
 
     [SerializeField]
     private ParticleSystem blood;
@@ -57,7 +56,6 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         _playerHealth = GetComponent<PlayerHealth>();
-        _playerAudio = GetComponent<PlayerAudio>();
         _playerControls = new PlayerControls();
         _characterController = GetComponent<CharacterController>();
         currentPitch = minPitch;
@@ -276,12 +274,11 @@ public class PlayerController : MonoBehaviour
             }
             
             Destroy(other.gameObject);
-            playerAudio.CoinSound(currentPitch);
+
         }
 
         if(other.gameObject.CompareTag("Spikes")){
             _playerHealth.TakeDamage(100);
-            _playerAudio.ImpaleSound();
             blood.Play();
         }
 

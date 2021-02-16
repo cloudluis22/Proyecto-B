@@ -22,11 +22,8 @@ public class PlayerHealth : MonoBehaviour
 
     private CinemachineImpulseSource shakeSource;
 
-    private PlayerAudio _playerAudio;
-
     private void Awake() {
         shakeSource = GetComponent<CinemachineImpulseSource>();
-        _playerAudio = GetComponent<PlayerAudio>();
     }
     
     void Start()
@@ -60,7 +57,6 @@ public class PlayerHealth : MonoBehaviour
         currentHealth -= damage;
         _healthBar.SetHealth(currentHealth);
         shakeSource.GenerateImpulse();
-        _playerAudio.HurtSound();
 
         if(currentHealth <= 0){
             Die();
@@ -71,7 +67,6 @@ public class PlayerHealth : MonoBehaviour
     {
            _animator.SetBool("IsDead", true);
            SetRagdoll(true);
-           _playerAudio.DieSound();
            this.gameObject.GetComponent<PlayerController>().enabled = false;
            
     }
