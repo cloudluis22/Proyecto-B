@@ -91,7 +91,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""interactions"": """"
                 },
                 {
-                    ""name"": ""WalkStart"",
+                    ""name"": ""SprintStart"",
                     ""type"": ""Button"",
                     ""id"": ""e9f90d97-161a-42bc-9eee-5cb0992564a4"",
                     ""expectedControlType"": ""Button"",
@@ -99,7 +99,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""interactions"": ""Press""
                 },
                 {
-                    ""name"": ""WalkFinish"",
+                    ""name"": ""SprintEnd"",
                     ""type"": ""Button"",
                     ""id"": ""3ac1e0c9-641e-4bc8-8160-484d422fc50d"",
                     ""expectedControlType"": ""Button"",
@@ -381,7 +381,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""WalkStart"",
+                    ""action"": ""SprintStart"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -392,7 +392,7 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""interactions"": ""Press(behavior=1)"",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""WalkFinish"",
+                    ""action"": ""SprintEnd"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -499,8 +499,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         m_Land_Quit = m_Land.FindAction("Quit", throwIfNotFound: true);
         m_Land_Restart = m_Land.FindAction("Restart", throwIfNotFound: true);
         m_Land_DebugHP = m_Land.FindAction("Debug HP", throwIfNotFound: true);
-        m_Land_WalkStart = m_Land.FindAction("WalkStart", throwIfNotFound: true);
-        m_Land_WalkFinish = m_Land.FindAction("WalkFinish", throwIfNotFound: true);
+        m_Land_SprintStart = m_Land.FindAction("SprintStart", throwIfNotFound: true);
+        m_Land_SprintEnd = m_Land.FindAction("SprintEnd", throwIfNotFound: true);
         m_Land_Crouch = m_Land.FindAction("Crouch", throwIfNotFound: true);
         m_Land_PickUp = m_Land.FindAction("PickUp", throwIfNotFound: true);
         m_Land_GetWeapon = m_Land.FindAction("GetWeapon", throwIfNotFound: true);
@@ -568,8 +568,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     private readonly InputAction m_Land_Quit;
     private readonly InputAction m_Land_Restart;
     private readonly InputAction m_Land_DebugHP;
-    private readonly InputAction m_Land_WalkStart;
-    private readonly InputAction m_Land_WalkFinish;
+    private readonly InputAction m_Land_SprintStart;
+    private readonly InputAction m_Land_SprintEnd;
     private readonly InputAction m_Land_Crouch;
     private readonly InputAction m_Land_PickUp;
     private readonly InputAction m_Land_GetWeapon;
@@ -586,8 +586,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         public InputAction @Quit => m_Wrapper.m_Land_Quit;
         public InputAction @Restart => m_Wrapper.m_Land_Restart;
         public InputAction @DebugHP => m_Wrapper.m_Land_DebugHP;
-        public InputAction @WalkStart => m_Wrapper.m_Land_WalkStart;
-        public InputAction @WalkFinish => m_Wrapper.m_Land_WalkFinish;
+        public InputAction @SprintStart => m_Wrapper.m_Land_SprintStart;
+        public InputAction @SprintEnd => m_Wrapper.m_Land_SprintEnd;
         public InputAction @Crouch => m_Wrapper.m_Land_Crouch;
         public InputAction @PickUp => m_Wrapper.m_Land_PickUp;
         public InputAction @GetWeapon => m_Wrapper.m_Land_GetWeapon;
@@ -627,12 +627,12 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @DebugHP.started -= m_Wrapper.m_LandActionsCallbackInterface.OnDebugHP;
                 @DebugHP.performed -= m_Wrapper.m_LandActionsCallbackInterface.OnDebugHP;
                 @DebugHP.canceled -= m_Wrapper.m_LandActionsCallbackInterface.OnDebugHP;
-                @WalkStart.started -= m_Wrapper.m_LandActionsCallbackInterface.OnWalkStart;
-                @WalkStart.performed -= m_Wrapper.m_LandActionsCallbackInterface.OnWalkStart;
-                @WalkStart.canceled -= m_Wrapper.m_LandActionsCallbackInterface.OnWalkStart;
-                @WalkFinish.started -= m_Wrapper.m_LandActionsCallbackInterface.OnWalkFinish;
-                @WalkFinish.performed -= m_Wrapper.m_LandActionsCallbackInterface.OnWalkFinish;
-                @WalkFinish.canceled -= m_Wrapper.m_LandActionsCallbackInterface.OnWalkFinish;
+                @SprintStart.started -= m_Wrapper.m_LandActionsCallbackInterface.OnSprintStart;
+                @SprintStart.performed -= m_Wrapper.m_LandActionsCallbackInterface.OnSprintStart;
+                @SprintStart.canceled -= m_Wrapper.m_LandActionsCallbackInterface.OnSprintStart;
+                @SprintEnd.started -= m_Wrapper.m_LandActionsCallbackInterface.OnSprintEnd;
+                @SprintEnd.performed -= m_Wrapper.m_LandActionsCallbackInterface.OnSprintEnd;
+                @SprintEnd.canceled -= m_Wrapper.m_LandActionsCallbackInterface.OnSprintEnd;
                 @Crouch.started -= m_Wrapper.m_LandActionsCallbackInterface.OnCrouch;
                 @Crouch.performed -= m_Wrapper.m_LandActionsCallbackInterface.OnCrouch;
                 @Crouch.canceled -= m_Wrapper.m_LandActionsCallbackInterface.OnCrouch;
@@ -673,12 +673,12 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                 @DebugHP.started += instance.OnDebugHP;
                 @DebugHP.performed += instance.OnDebugHP;
                 @DebugHP.canceled += instance.OnDebugHP;
-                @WalkStart.started += instance.OnWalkStart;
-                @WalkStart.performed += instance.OnWalkStart;
-                @WalkStart.canceled += instance.OnWalkStart;
-                @WalkFinish.started += instance.OnWalkFinish;
-                @WalkFinish.performed += instance.OnWalkFinish;
-                @WalkFinish.canceled += instance.OnWalkFinish;
+                @SprintStart.started += instance.OnSprintStart;
+                @SprintStart.performed += instance.OnSprintStart;
+                @SprintStart.canceled += instance.OnSprintStart;
+                @SprintEnd.started += instance.OnSprintEnd;
+                @SprintEnd.performed += instance.OnSprintEnd;
+                @SprintEnd.canceled += instance.OnSprintEnd;
                 @Crouch.started += instance.OnCrouch;
                 @Crouch.performed += instance.OnCrouch;
                 @Crouch.canceled += instance.OnCrouch;
@@ -769,8 +769,8 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         void OnQuit(InputAction.CallbackContext context);
         void OnRestart(InputAction.CallbackContext context);
         void OnDebugHP(InputAction.CallbackContext context);
-        void OnWalkStart(InputAction.CallbackContext context);
-        void OnWalkFinish(InputAction.CallbackContext context);
+        void OnSprintStart(InputAction.CallbackContext context);
+        void OnSprintEnd(InputAction.CallbackContext context);
         void OnCrouch(InputAction.CallbackContext context);
         void OnPickUp(InputAction.CallbackContext context);
         void OnGetWeapon(InputAction.CallbackContext context);
