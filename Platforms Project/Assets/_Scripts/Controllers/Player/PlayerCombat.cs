@@ -3,19 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+public enum CombatStates
+{
+    Attacking,
+    Idle
+}
+
 public class PlayerCombat : MonoBehaviour
 {
     public Animator _animator;
     private PlayerControls _playerControls;
     public PlayerAudio _playerAudio;
+    public CharacterController _characterController;
+    public CombatStates combatStates;
 
     bool holdsWeapon;
     int comboIndex = 0;
-    bool runTimer;
-    float timer = 0;
+    bool runTimer, runCooldown, cooldown;
+    float timer = 0, timer2 = 0;
+    [SerializeField] bool canCombo = false;
 
     [SerializeField]
-    float maxTime = 1.5f;
+    float maxTime = 1.5f, maxCooldownTime = 0.5f;
+    bool isAttacking;
+
+    private Animation animation;
 
     private void Awake()
     {
@@ -27,6 +39,7 @@ public class PlayerCombat : MonoBehaviour
     {
         _playerControls.Enable();
         _animator.GetComponent<Animator>();
+        _characterController = GetComponent<CharacterController>();
     }
 
     private void OnDisable()
@@ -34,53 +47,131 @@ public class PlayerCombat : MonoBehaviour
         _playerControls.Disable();
     }
 
-    
-    private void Update() {
+    private void Start()
+    {
+        combatStates = CombatStates.Idle;
+    }
+
+    private void Update()
+    {
         PlayerAttack();
         Debug.Log(comboIndex);
     }
 
-    public void PlayerAttack(){
+    public void ComboActivation()
+    {
+        if(!canCombo)
+        {
+            canCombo = true;
+        }
+        else
+        {
+            canCombo = false;
+        }
+        
+    }
 
-        if(_playerControls.Combat.Attack.triggered){
+    public void SetCombatState()
+    {
+        combatStates = CombatStates.Idle;
+        isAttacking = false;
+        _animator.ResetTrigger("Box 1");
+    }
 
-            if(_animator.GetBool("Holds Weapon") && _animator.GetFloat("Speed") < 0.01f){
-                
-                switch(comboIndex){
+    public void PlayerAttack()
+    {
+
+        if (_playerControls.Combat.Attack.triggered && !runCooldown)
+        {
+
+            if (_animator.GetBool("Holds Weapon"))
+            {
+
+                switch (comboIndex)
+                {
 
                     case 0:
                         _animator.SetTrigger("Melee 1");
-                        comboIndex++;
+
                         runTimer = true;
-                    break;
-                        
-                    case 1:
-                        _animator.SetTrigger("Melee 2");
+                        combatStates = CombatStates.Attacking;
                         comboIndex++;
-                        timer = 0;
-                    break;
+
+                        break;
+
+                    case 1:
+
+                        if (canCombo)
+                        {
+                            _animator.SetTrigger("Melee 2");
+                            timer = 0;
+                            comboIndex++;
+                        }
+
+                        break;
 
                     case 2:
-                        _animator.SetTrigger("Melee 3");
-                    break;
+                       // if (canCombo)
+                       // {
+                            _animator.SetTrigger("Melee 3");
+                            runCooldown = true;
+                        //}
+
+                        break;
                 }
-                
+
+            }
+            else
+            {
+
+                switch (comboIndex)
+                {
+
+                    case 0:
+                        _animator.SetTrigger("Box 1");
+
+                        runTimer = true;
+                        combatStates = CombatStates.Attacking;
+                        comboIndex++;
+                        //isAttacking = true;
+                        break;
+
+                    case 1:
+
+                        _animator.SetTrigger("Box 2");
+                        combatStates = CombatStates.Attacking;
+                        //_animator.ResetTrigger("Box 1");
+                        break;
+                }
             }
 
         }
 
-        if(runTimer){
+        if (runTimer)
+        {
 
             timer += Time.deltaTime;
 
-            if(timer >= maxTime){
+            if (timer >= maxTime)
+            {
                 timer = 0;
                 comboIndex = 0;
                 runTimer = false;
             }
 
         }
-        
+
+        if (runCooldown)
+        {
+
+            timer2 += Time.deltaTime;
+
+            if (timer2 >= maxCooldownTime)
+            {
+                runCooldown = false;
+            }
+        }
+
     }
- 
+
 }

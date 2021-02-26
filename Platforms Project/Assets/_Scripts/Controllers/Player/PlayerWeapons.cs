@@ -2,8 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum CombatStates {idle, moving, attacking, none};
-
 public class PlayerWeapons : MonoBehaviour
 {
     public Animator _animator;
@@ -47,7 +45,6 @@ public class PlayerWeapons : MonoBehaviour
 
     private void Start() {
         GenerateWeaponPositions();
-        _combatStates = CombatStates.none;
     }
 
     private void Update() {
@@ -146,13 +143,8 @@ public class PlayerWeapons : MonoBehaviour
         
         if(holdsWeapon){
 
-            _combatStates = CombatStates.idle;
-
             if(_animator.GetFloat("Speed") >= 0.01f){
-                _combatStates = CombatStates.moving;
-            }
-            else{
-                _combatStates = CombatStates.idle;
+  
             }
         }
     }

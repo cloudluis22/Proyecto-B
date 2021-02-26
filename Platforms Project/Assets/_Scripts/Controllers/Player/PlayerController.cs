@@ -3,8 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public enum AnimationStates { standing, walking, running, punching, jumping, falling, crouching, crouchWalking, attackIdle, attackMoving, attacking};
-    
+public enum AnimationStates
+{
+    standing,
+    walking,
+    running,
+    punching,
+    jumping,
+    falling,
+    crouching,
+    crouchWalking,
+    attackIdle,
+    attackMoving,
+    attacking
+
+};
+
 public class PlayerController : MonoBehaviour
 {
     public CharacterController _characterController;
@@ -15,7 +29,7 @@ public class PlayerController : MonoBehaviour
     public PlayerCombat playerCombat;
 
     public AnimationStates _animationStates;
-    
+
     public float smoothTurnTime = 0.1f;
     private float turnSmoothVelocity;
 
@@ -41,10 +55,9 @@ public class PlayerController : MonoBehaviour
     private float coinTimer, minPitch, maxPitch;
     private float timeRemaining, currentPitch;
 
-    private bool runTimer, isHoldingWalk = false, takeFallDamage;
+    private bool runTimer, isHoldingSprint = false, takeFallDamage;
 
     private PlayerHealth _playerHealth;
-    private PlayerAudio _playerAudio;
 
     [SerializeField]
     private ParticleSystem blood;
@@ -57,9 +70,9 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         _playerHealth = GetComponent<PlayerHealth>();
-        _playerAudio = GetComponent<PlayerAudio>();
         _playerControls = new PlayerControls();
         _characterController = GetComponent<CharacterController>();
+        playerCombat = GetComponent<PlayerCombat>();
         currentPitch = minPitch;
         timeRemaining = coinTimer;
 
@@ -85,7 +98,8 @@ public class PlayerController : MonoBehaviour
             gravityVelocity.y = -2f;
             _animator.SetBool("IsGrounded", true);
 
-            if(takeFallDamage){
+            if (takeFallDamage)
+            {
                 takeFallDamage = false;
                 _playerHealth.TakeDamage(5);
             }
@@ -95,14 +109,16 @@ public class PlayerController : MonoBehaviour
         {
             _animator.SetBool("IsGrounded", false);
         }
-           
-            PlayerMovement();
-            ShortJumpAnimation();
-            LongJumpAnimation();
-            PlayerGravity();
 
-        if(runTimer){
-            if(timeRemaining >= 0){
+        PlayerMovement();
+        ShortJumpAnimation();
+        LongJumpAnimation();
+        PlayerGravity();
+
+        if (runTimer)
+        {
+            if (timeRemaining >= 0)
+            {
                 timeRemaining -= Time.deltaTime;
                 Debug.Log(timeRemaining + " seconds left!.");
             }
@@ -114,11 +130,13 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if(_playerControls.Land.WalkStart.triggered){
-            isHoldingWalk = true;
+        if (_playerControls.Land.SprintStart.triggered)
+        {
+            isHoldingSprint = true;
         }
-        else if(_playerControls.Land.WalkFinish.triggered){
-            isHoldingWalk = false;
+        else if (_playerControls.Land.SprintEnd.triggered)
+        {
+            isHoldingSprint = false;
         }
 
         FallDistance();
@@ -130,16 +148,6 @@ public class PlayerController : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(groundCheck.position, groundDistance);
     }
-
-   /* public void SetRagdollParts()
-    {
-       Collider[] colliders = this.gameObject.GetComponentsInChildren<Collider>();
-
-       foreach(Collider colls in colliders)
-       {
-           colls.isTrigger = true;
-       }
-    } */
 
     /// <summary>
     /// Método que crea el movimiento y rotación del jugador.
@@ -157,26 +165,36 @@ public class PlayerController : MonoBehaviour
         if (direction.magnitude >= 0.1f && !isLanding)
         {
 
-            if(isHoldingWalk){
+            if (isHoldingSprint)
+            {
 
-            _animator.SetFloat("Speed", 0.5f);
-             movementSpeed = 0.5f * speedNumber;   
-            }else{
-                _animator.SetFloat("Speed", movementInput.magnitude);   
+                _animator.SetBool("Sprint", true);
+                movementSpeed = 1.5f * speedNumber;
+                
             }
-            
-            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, smoothTurnTime);
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            else
+            {
+                _animator.SetBool("Sprint", false);
+                _animator.SetFloat("Speed", movementInput.magnitude);
+            }
 
-            Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            _characterController.Move(moveDirection.normalized * movementSpeed * Time.deltaTime);
+            if(isCrouched){
+                movementSpeed = 0.3f * speedNumber;
+            }
 
-           
+            if(playerCombat.combatStates != CombatStates.Attacking){
+                float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
+                float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, smoothTurnTime);
+                transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
+                Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+                _characterController.Move(moveDirection.normalized * movementSpeed * Time.deltaTime);
+            }
+    
             if (_animator.GetFloat("Speed") < 0.6f)
             {
-                if(!isCrouched){
+                if (!isCrouched)
+                {
                     _animationStates = AnimationStates.walking;
                 }
                 else
@@ -184,22 +202,26 @@ public class PlayerController : MonoBehaviour
             }
             else if (_animator.GetFloat("Speed") > 0.6f)
             {
-                if(!isCrouched){
+                if (!isCrouched)
+                {
                     _animationStates = AnimationStates.running;
                 }
-                else{
+                else
+                {
                     _animationStates = AnimationStates.crouchWalking;
                 }
             }
         }
         else
         {
-            _animator.SetFloat("Speed", 0f, 0.1f, Time.deltaTime);
-            
-            if(!isCrouched){
+            _animator.SetFloat("Speed", 0f);
+
+            if (!isCrouched)
+            {
                 _animationStates = AnimationStates.standing;
             }
-            else{
+            else
+            {
                 _animationStates = AnimationStates.crouching;
             }
         }
@@ -220,17 +242,17 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void ShortJumpAnimation()
     {
-       if(_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.running && !isJumping)
+        if (_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.running && !isJumping)
         {
             isJumping = true;
             _animator.SetTrigger("ShortJump");
         }
-        
+
     }
 
-   /// <summary>
-   /// Método que ejecuta el salto corto del jugador mientras corre, llamado por un Animator Event en la animación de salto correspondiente.
-   /// </summary>
+    /// <summary>
+    /// Método que ejecuta el salto corto del jugador mientras corre, llamado por un Animator Event en la animación de salto correspondiente.
+    /// </summary>
     public void ShortPlayerJump()
     {
         gravityVelocity.y = Mathf.Sqrt(shortJumpHeight * -2f * gravity);
@@ -244,7 +266,7 @@ public class PlayerController : MonoBehaviour
     {
         if (_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.standing && !isJumping)
         {
-             isJumping = true;
+            isJumping = true;
             _animator.SetTrigger("LongJump");
         }
 
@@ -264,24 +286,27 @@ public class PlayerController : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Coin"))
         {
-            if(!runTimer){
+            if (!runTimer)
+            {
                 runTimer = true;
             }
-            else{
+            else
+            {
                 currentPitch += 0.1f;
                 timeRemaining = coinTimer;
-                if(currentPitch >= maxPitch){
+                if (currentPitch >= maxPitch)
+                {
                     currentPitch = maxPitch;
                 }
             }
-            
+
             Destroy(other.gameObject);
-            playerAudio.CoinSound(currentPitch);
+
         }
 
-        if(other.gameObject.CompareTag("Spikes")){
+        if (other.gameObject.CompareTag("Spikes"))
+        {
             _playerHealth.TakeDamage(100);
-            _playerAudio.ImpaleSound();
             blood.Play();
         }
 
@@ -308,9 +333,11 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// Calcula el daño de caída del jugador.
     /// </summary>
-    public void FallDistance(){
+    public void FallDistance()
+    {
 
-        if(gravityVelocity.y < -20){
+        if (gravityVelocity.y < -20)
+        {
             takeFallDamage = true;
         }
 
@@ -319,29 +346,33 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// Método que realiza la acciíon de agacharse de Benny.
     /// </summary>
-    private void PlayerCrouching(){
+    private void PlayerCrouching()
+    {
 
-        if(_playerControls.Land.Crouch.triggered){
-            
-            if(!isCrouched){
-                
-                if(_animationStates == AnimationStates.standing){
-                    isCrouched = true;
-                    _animator.SetBool("IsCrouched", true);
-                    speedNumber = crouchSpeed;
+        if (_playerControls.Land.Crouch.triggered)
+        {
+
+            if (_playerControls.Land.Crouch.triggered)
+            {
+
+                if (IsGrounded)
+                {
+                    if (!isCrouched)
+                    {
+                        isCrouched = true;
+                        _animator.SetBool("IsCrouched", true);
+                        _animationStates = AnimationStates.crouching;
+                        
+                    }
+                    else
+                    {
+                        isCrouched = false;
+                        _animator.SetBool("IsCrouched", false);
+                        _animationStates = AnimationStates.standing;
+                    }
+
                 }
-             
             }
-            else{
-                
-                if(_animationStates != AnimationStates.crouchWalking){
-                    isCrouched = false;
-                    _animator.SetBool("IsCrouched", false);
-                    speedNumber = defaultSpeed;
-                } 
-                
-            }
-             
         }
     }
 
