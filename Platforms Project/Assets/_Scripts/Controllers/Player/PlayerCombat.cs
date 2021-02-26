@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public enum CombatStates 
+public enum CombatStates
 {
     Attacking,
     Idle
@@ -25,6 +25,9 @@ public class PlayerCombat : MonoBehaviour
 
     [SerializeField]
     float maxTime = 1.5f, maxCooldownTime = 0.5f;
+    bool isAttacking;
+
+    private Animation animation;
 
     private void Awake()
     {
@@ -44,39 +47,62 @@ public class PlayerCombat : MonoBehaviour
         _playerControls.Disable();
     }
 
-    private void Start() {
-        combatStates = CombatStates.Idle;        
+    private void Start()
+    {
+        combatStates = CombatStates.Idle;
     }
 
-    private void Update() {
+    private void Update()
+    {
         PlayerAttack();
         Debug.Log(comboIndex);
     }
 
-    public void ComboActivation(){
-        canCombo = true;
+    public void ComboActivation()
+    {
+        if(!canCombo)
+        {
+            canCombo = true;
+        }
+        else
+        {
+            canCombo = false;
+        }
+        
     }
 
-    public void PlayerAttack(){
+    public void SetCombatState()
+    {
+        combatStates = CombatStates.Idle;
+        isAttacking = false;
+        _animator.ResetTrigger("Box 1");
+    }
 
-        if(_playerControls.Combat.Attack.triggered && !runCooldown){
+    public void PlayerAttack()
+    {
 
-            if(_animator.GetBool("Holds Weapon") && _animator.GetFloat("Speed") < 0.01f){
+        if (_playerControls.Combat.Attack.triggered && !runCooldown)
+        {
 
-                switch(comboIndex){
+            if (_animator.GetBool("Holds Weapon"))
+            {
+
+                switch (comboIndex)
+                {
 
                     case 0:
                         _animator.SetTrigger("Melee 1");
-                        
+
                         runTimer = true;
                         combatStates = CombatStates.Attacking;
                         comboIndex++;
 
                         break;
-                        
+
                     case 1:
-                        
-                        if(canCombo){
+
+                        if (canCombo)
+                        {
                             _animator.SetTrigger("Melee 2");
                             timer = 0;
                             comboIndex++;
@@ -85,73 +111,67 @@ public class PlayerCombat : MonoBehaviour
                         break;
 
                     case 2:
-                        if(canCombo){
-                             _animator.SetTrigger("Melee 3");
-                             runCooldown = true;
-                        }
+                       // if (canCombo)
+                       // {
+                            _animator.SetTrigger("Melee 3");
+                            runCooldown = true;
+                        //}
 
                         break;
                 }
-                
+
             }
-            else{
-                
-                switch(comboIndex){
+            else
+            {
+
+                switch (comboIndex)
+                {
 
                     case 0:
                         _animator.SetTrigger("Box 1");
-                        
+
                         runTimer = true;
                         combatStates = CombatStates.Attacking;
                         comboIndex++;
-
+                        //isAttacking = true;
                         break;
-                        
+
                     case 1:
-                        
-                        
-                            _animator.SetTrigger("Box 2");
-                            timer = 0;
-                            comboIndex++;
-                        
 
+                        _animator.SetTrigger("Box 2");
+                        combatStates = CombatStates.Attacking;
+                        //_animator.ResetTrigger("Box 1");
                         break;
-
-                    case 2:
-                        
-                             _animator.SetTrigger("Box 3");
-                             runCooldown = true;
-                        
-
-                        break;
-            }                
-           }
+                }
+            }
 
         }
 
-        if(runTimer){
+        if (runTimer)
+        {
 
             timer += Time.deltaTime;
 
-            if(timer >= maxTime){
+            if (timer >= maxTime)
+            {
                 timer = 0;
                 comboIndex = 0;
                 runTimer = false;
-                combatStates = CombatStates.Idle;
-                canCombo = false;
             }
 
         }
 
-        if(runCooldown){
+        if (runCooldown)
+        {
 
             timer2 += Time.deltaTime;
 
-            if(timer2 >= maxCooldownTime){
+            if (timer2 >= maxCooldownTime)
+            {
                 runCooldown = false;
             }
         }
-        
+
     }
- 
+
 }

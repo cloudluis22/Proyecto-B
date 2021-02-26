@@ -48,7 +48,7 @@ ModelImporter:
       firstFrame: 0
       lastFrame: 20
       wrapMode: 0
-      orientationOffsetY: -40.9
+      orientationOffsetY: -24.8
       level: 0
       cycleOffset: 0
       loop: 0
@@ -66,8 +66,8 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.7581967
-        functionName: ComboActivation
+      - time: 0.9959017
+        functionName: SetCombatState
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
