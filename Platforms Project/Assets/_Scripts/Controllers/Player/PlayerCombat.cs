@@ -27,8 +27,6 @@ public class PlayerCombat : MonoBehaviour
     float maxTime = 1.5f, maxCooldownTime = 0.5f;
     bool isAttacking;
 
-    private Animation animation;
-
     private void Awake()
     {
         _playerControls = new PlayerControls();
@@ -55,7 +53,6 @@ public class PlayerCombat : MonoBehaviour
     private void Update()
     {
         PlayerAttack();
-        Debug.Log(comboIndex);
     }
 
     public void ComboActivation()
