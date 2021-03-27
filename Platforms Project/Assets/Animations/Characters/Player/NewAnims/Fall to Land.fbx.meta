@@ -38,7 +38,7 @@ ModelImporter:
       name: New Fall to Land
       takeName: mixamo.com
       internalID: 0
-      firstFrame: 8.5
+      firstFrame: 7.8000007
       lastFrame: 32
       wrapMode: 0
       orientationOffsetY: 0
@@ -48,7 +48,7 @@ ModelImporter:
       hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
-      loopBlendOrientation: 0
+      loopBlendOrientation: 1
       loopBlendPositionY: 1
       loopBlendPositionXZ: 1
       keepOriginalOrientation: 0
@@ -59,14 +59,14 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0
+      - time: 0.19160105
         functionName: IsLanding
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.99827594
+      - time: 0.77952754
         functionName: HasLanded
         data: 
         objectReferenceParameter: {instanceID: 0}
