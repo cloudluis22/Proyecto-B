@@ -41,7 +41,7 @@ ModelImporter:
       firstFrame: 0
       lastFrame: 18.5
       wrapMode: 0
-      orientationOffsetY: 0
+      orientationOffsetY: -18
       level: 0
       cycleOffset: 0
       loop: 0
@@ -61,13 +61,6 @@ ModelImporter:
       events:
       - time: 1
         functionName: LongPlayerJump
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: 0.8844828
-        functionName: LongJumpSound
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public enum AnimationStates
 {
     standing,
-    walking,
+    jogging,
     running,
     punching,
     jumping,
@@ -66,6 +66,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private float crouchSpeed = 2, defaultSpeed = 8;
+    
 
     private void Awake()
     {
@@ -167,10 +168,9 @@ public class PlayerController : MonoBehaviour
 
             if (isHoldingSprint)
             {
-
                 _animator.SetBool("Sprint", true);
+                _animator.SetFloat("Speed", 1f);
                 movementSpeed = 1.5f * speedNumber;
-                
             }
             else
             {
@@ -190,25 +190,24 @@ public class PlayerController : MonoBehaviour
                 Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
                 _characterController.Move(moveDirection.normalized * movementSpeed * Time.deltaTime);
             }
-    
-            if (_animator.GetFloat("Speed") < 0.6f)
+
+            if (_animator.GetFloat("Speed") > 0.01f)
             {
-                if (!isCrouched)
+
+                if(!_animator.GetBool("Sprint"))
                 {
-                    _animationStates = AnimationStates.walking;
+                    if (!isCrouched)
+                    {
+                    _animationStates = AnimationStates.jogging;
+                    }
+                else
+                    {
+                        _animationStates = AnimationStates.crouchWalking;
+                    }
                 }
                 else
-                    _animationStates = AnimationStates.crouching;
-            }
-            else if (_animator.GetFloat("Speed") > 0.6f)
-            {
-                if (!isCrouched)
                 {
                     _animationStates = AnimationStates.running;
-                }
-                else
-                {
-                    _animationStates = AnimationStates.crouchWalking;
                 }
             }
         }
@@ -374,6 +373,16 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void FootIndex0()
+    {
+        _animator.SetInteger("Foot Index", 0);
+    }
+
+        public void FootIndex1()
+    {
+        _animator.SetInteger("Foot Index", 1);
     }
 
 }
