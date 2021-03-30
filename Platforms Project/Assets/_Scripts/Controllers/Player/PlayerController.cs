@@ -166,7 +166,7 @@ public class PlayerController : MonoBehaviour
         if (direction.magnitude >= 0.1f && !isLanding)
         {
 
-            if (isHoldingSprint)
+            if (isHoldingSprint && !isCrouched)
             {
                 _animator.SetBool("Sprint", true);
                 _animator.SetFloat("Speed", 1f);
