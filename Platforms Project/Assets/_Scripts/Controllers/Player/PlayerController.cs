@@ -92,24 +92,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        IsGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-        if (IsGrounded && gravityVelocity.y < 0)
-        {
-            gravityVelocity.y = -2f;
-            _animator.SetBool("IsGrounded", true);
-
-            if (takeFallDamage)
-            {
-                takeFallDamage = false;
-                _playerHealth.TakeDamage(5);
-            }
-        }
-
-        if (!IsGrounded)
-        {
-            _animator.SetBool("IsGrounded", false);
-        }
 
         PlayerMovement();
         ShortJumpAnimation();
@@ -234,6 +217,33 @@ public class PlayerController : MonoBehaviour
     {
         gravityVelocity.y += gravity * Time.deltaTime;
         _characterController.Move(gravityVelocity * Time.deltaTime);
+
+        IsGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+
+        if (IsGrounded && gravityVelocity.y < 0)
+        {
+            gravityVelocity.y = -2f;
+            _animator.SetBool("IsGrounded", true);
+            isJumping = false;
+            speedNumber = 6f;
+        }
+
+        if (!IsGrounded)
+        {
+            _animator.SetBool("IsGrounded", false);
+
+            if(gravityVelocity.y < -3f)
+            {
+                if(gravityVelocity.y < -7f)
+                {
+                    _animator.SetBool("Land", true);
+                }
+            }
+            else
+            {
+                _animator.SetBool("Land", false);
+            }
+        }
     }
 
     /// <summary>
@@ -324,7 +334,6 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public void HasLanded()
     {
-        speedNumber = 6f;
         isLanding = false;
         isJumping = false;
     }
