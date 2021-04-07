@@ -71,6 +71,9 @@ public class PlayerController : MonoBehaviour
    [SerializeField] private Transform frontRayPosition;
     [SerializeField] private float frontRayLenght = 0.3f;
 
+    [Header("Above Raycast Settings")]
+   [SerializeField] private Transform aboveRayPosition;
+    [SerializeField] private float aboveRayLenght = 0.5f;
 
     private void Awake()
     {
@@ -102,7 +105,8 @@ public class PlayerController : MonoBehaviour
         PlayerCrouching();
         PlayerSprint();
 
-        // Debug.DrawRay(frontRayPosition.transform.position, this.gameObject.gameObject.transform.forward * frontRayLenght, Color.red);
+        Debug.DrawRay(frontRayPosition.transform.position, this.gameObject.gameObject.transform.forward * frontRayLenght, Color.red);
+        Debug.DrawRay(aboveRayPosition.transform.position, this.gameObject.gameObject.transform.up * aboveRayLenght, Color.red);
     }
 
     private void OnDrawGizmos()
@@ -224,6 +228,7 @@ public class PlayerController : MonoBehaviour
         if (!IsGrounded)
         {
             _animator.SetBool("IsGrounded", false);
+            _animator.ResetTrigger("LongJump");
 
             if(gravityVelocity.y < -3f)
             {
@@ -272,7 +277,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void LongJumpAnimation()
     {
-        if (_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.standing && !isJumping)
+        if (_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.standing && !isJumping && !CheckPlayerAbove())
         {
             isJumping = true;
             _animator.SetTrigger("LongJump");
@@ -387,7 +392,18 @@ public class PlayerController : MonoBehaviour
         {
             return false;
         }
+    }
 
+    private bool CheckPlayerAbove()
+    {
+        if(Physics.Raycast(aboveRayPosition.transform.position, this.gameObject.transform.up, aboveRayLenght))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
 }
