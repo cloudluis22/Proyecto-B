@@ -1165,7 +1165,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 451568957}
-  m_LocalRotation: {x: 0.013329795, y: 0.000000017204856, z: -2.2935753e-10, w: 0.9999112}
+  m_LocalRotation: {x: 0.013329795, y: 0.000000017204854, z: -2.2935757e-10, w: 0.9999112}
   m_LocalPosition: {x: -456.82343, y: -296.2131, z: -162.19191}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -1336,7 +1336,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 521942132}
-  m_LocalRotation: {x: 0.013329793, y: -0.000000017204854, z: 2.2935755e-10, w: 0.9999112}
+  m_LocalRotation: {x: 0.013329772, y: 0.000000017204849, z: -2.2935713e-10, w: 0.9999112}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1831,7 +1831,7 @@ GameObject:
   - component: {fileID: 1031928138}
   - component: {fileID: 1031928137}
   - component: {fileID: 1031928136}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5594,8 +5594,8 @@ CharacterController:
   m_Height: 1.5
   m_Radius: 0.3
   m_SlopeLimit: 45
-  m_StepOffset: 0.05
-  m_SkinWidth: 0.06
+  m_StepOffset: 0.2
+  m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.82, z: 0}
 --- !u!1 &1086368486170689793

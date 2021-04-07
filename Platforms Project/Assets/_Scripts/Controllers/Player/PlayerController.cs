@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-//hola
+
 public enum AnimationStates
 {
     standing,
@@ -76,7 +76,6 @@ public class PlayerController : MonoBehaviour
         playerCombat = GetComponent<PlayerCombat>();
         currentPitch = minPitch;
         timeRemaining = coinTimer;
-
         speedNumber = defaultSpeed;
     }
 
@@ -92,45 +91,33 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-
-
         PlayerMovement();
         ShortJumpAnimation();
         LongJumpAnimation();
         PlayerGravity();
-
-        if (runTimer)
-        {
-            if (timeRemaining >= 0)
-            {
-                timeRemaining -= Time.deltaTime;
-                Debug.Log(timeRemaining + " seconds left!.");
-            }
-            else
-            {
-                currentPitch = minPitch;
-                runTimer = false;
-                timeRemaining = coinTimer;
-            }
-        }
-
-        if (_playerControls.Land.SprintStart.triggered)
-        {
-            isHoldingSprint = true;
-        }
-        else if (_playerControls.Land.SprintEnd.triggered)
-        {
-            isHoldingSprint = false;
-        }
-
-        FallDistance();
         PlayerCrouching();
+        PlayerSprint();
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(groundCheck.position, groundDistance);
+    }
+
+    /// <summary>
+    /// Método que maneja el sprint del jugador.
+    /// </summary>
+    private void PlayerSprint()
+    {
+        if (_playerControls.Land.SprintStart.triggered)
+            {
+                isHoldingSprint = true;
+            }
+        else if (_playerControls.Land.SprintEnd.triggered)
+            {
+                isHoldingSprint = false;
+            }
     }
 
     /// <summary>
@@ -336,19 +323,6 @@ public class PlayerController : MonoBehaviour
     {
         isLanding = false;
         isJumping = false;
-    }
-
-    /// <summary>
-    /// Calcula el daño de caída del jugador.
-    /// </summary>
-    public void FallDistance()
-    {
-
-        if (gravityVelocity.y < -20)
-        {
-            takeFallDamage = true;
-        }
-
     }
 
     /// <summary>
