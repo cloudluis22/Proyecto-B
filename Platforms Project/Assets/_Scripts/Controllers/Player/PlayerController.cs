@@ -66,7 +66,11 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private float crouchSpeed = 2, defaultSpeed = 8;
-    
+
+    [Header("Front Raycast Settings")]
+   [SerializeField] private Transform frontRayPosition;
+    [SerializeField] private float frontRayLenght = 0.3f;
+
 
     private void Awake()
     {
@@ -97,6 +101,8 @@ public class PlayerController : MonoBehaviour
         PlayerGravity();
         PlayerCrouching();
         PlayerSprint();
+
+        // Debug.DrawRay(frontRayPosition.transform.position, this.gameObject.gameObject.transform.forward * frontRayLenght, Color.red);
     }
 
     private void OnDrawGizmos()
@@ -230,6 +236,12 @@ public class PlayerController : MonoBehaviour
             {
                 _animator.SetBool("Land", false);
             }
+
+            _characterController.stepOffset = 0;
+        }
+        else
+        {
+            _characterController.stepOffset = 0.2f;            
         }
     }
 
@@ -238,7 +250,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void ShortJumpAnimation()
     {
-        if (_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.running && !isJumping)
+        if (_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.running && !isJumping && !CheckPlayerFront())
         {
             isJumping = true;
             _animator.SetTrigger("ShortJump");
@@ -363,6 +375,19 @@ public class PlayerController : MonoBehaviour
         public void FootIndex1()
     {
         _animator.SetInteger("Foot Index", 1);
+    }
+
+    private bool CheckPlayerFront()
+    {
+        if(Physics.Raycast(frontRayPosition.transform.position, this.gameObject.transform.forward, frontRayLenght))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
     }
 
 }
