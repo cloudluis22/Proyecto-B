@@ -189,7 +189,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 21810709}
-  m_LocalRotation: {x: 0.013329793, y: 0.000000017204854, z: -2.2935755e-10, w: 0.9999112}
+  m_LocalRotation: {x: 0.013329772, y: -0.000000017204849, z: 2.2935713e-10, w: 0.9999112}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -555,7 +555,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 181885094}
-  m_LocalRotation: {x: 0.013329793, y: 0.000000017204854, z: -2.2935755e-10, w: 0.9999112}
+  m_LocalRotation: {x: 0.013329772, y: -0.000000017204849, z: 2.2935713e-10, w: 0.9999112}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1167,7 +1167,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 451568957}
-  m_LocalRotation: {x: 0.013329795, y: 0.000000017204856, z: -2.2935753e-10, w: 0.9999112}
+  m_LocalRotation: {x: 0.013329795, y: -0.000000017204849, z: 2.2935752e-10, w: 0.9999112}
   m_LocalPosition: {x: -456.82343, y: -296.57312, z: -162.19191}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -3535,6 +3535,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0b09e7857660247b1477e93731de29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2067809992
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2067809993}
+  m_Layer: 0
+  m_Name: Above Rat Start Position
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2067809993
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2067809992}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.641, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1082667994035253643}
+  m_RootOrder: 13
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &1028077357157007171
 Animator:
   serializedVersion: 3
@@ -4530,6 +4560,7 @@ Transform:
   - {fileID: 1087977720147899777}
   - {fileID: 1554177293}
   - {fileID: 499953254}
+  - {fileID: 2067809993}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5647,6 +5678,8 @@ MonoBehaviour:
   defaultSpeed: 8
   frontRayPosition: {fileID: 499953254}
   frontRayLenght: 1.5
+  aboveRayPosition: {fileID: 2067809993}
+  aboveRayLenght: 4
 --- !u!114 &1086355625032290397
 MonoBehaviour:
   m_ObjectHideFlags: 0

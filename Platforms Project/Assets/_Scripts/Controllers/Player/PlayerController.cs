@@ -105,8 +105,9 @@ public class PlayerController : MonoBehaviour
         PlayerCrouching();
         PlayerSprint();
 
-        Debug.DrawRay(frontRayPosition.transform.position, this.gameObject.gameObject.transform.forward * frontRayLenght, Color.red);
+       /* Debug.DrawRay(frontRayPosition.transform.position, this.gameObject.gameObject.transform.forward * frontRayLenght, Color.red);
         Debug.DrawRay(aboveRayPosition.transform.position, this.gameObject.gameObject.transform.up * aboveRayLenght, Color.red);
+        */
     }
 
     private void OnDrawGizmos()
