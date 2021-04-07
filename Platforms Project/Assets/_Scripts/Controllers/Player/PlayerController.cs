@@ -221,7 +221,7 @@ public class PlayerController : MonoBehaviour
 
             if(gravityVelocity.y < -3f)
             {
-                if(gravityVelocity.y < -7f)
+                if(gravityVelocity.y < -9f)
                 {
                     _animator.SetBool("Land", true);
                 }
@@ -331,10 +331,7 @@ public class PlayerController : MonoBehaviour
     private void PlayerCrouching()
     {
 
-        if (_playerControls.Land.Crouch.triggered)
-        {
-
-            if (_playerControls.Land.Crouch.triggered)
+            if (_playerControls.Land.Crouch.triggered && _animationStates != AnimationStates.running)
             {
 
                 if (IsGrounded)
@@ -354,7 +351,7 @@ public class PlayerController : MonoBehaviour
                     }
 
                 }
-            }
+            
         }
     }
 
