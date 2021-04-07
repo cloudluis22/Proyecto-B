@@ -66,7 +66,14 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private float crouchSpeed = 2, defaultSpeed = 8;
-    
+
+    [Header("Front Raycast Settings")]
+   [SerializeField] private Transform frontRayPosition;
+    [SerializeField] private float frontRayLenght = 0.3f;
+
+    [Header("Above Raycast Settings")]
+   [SerializeField] private Transform aboveRayPosition;
+    [SerializeField] private float aboveRayLenght = 0.5f;
 
     private void Awake()
     {
@@ -76,7 +83,6 @@ public class PlayerController : MonoBehaviour
         playerCombat = GetComponent<PlayerCombat>();
         currentPitch = minPitch;
         timeRemaining = coinTimer;
-
         speedNumber = defaultSpeed;
     }
 
@@ -92,45 +98,37 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-
-
         PlayerMovement();
         ShortJumpAnimation();
         LongJumpAnimation();
         PlayerGravity();
-
-        if (runTimer)
-        {
-            if (timeRemaining >= 0)
-            {
-                timeRemaining -= Time.deltaTime;
-                Debug.Log(timeRemaining + " seconds left!.");
-            }
-            else
-            {
-                currentPitch = minPitch;
-                runTimer = false;
-                timeRemaining = coinTimer;
-            }
-        }
-
-        if (_playerControls.Land.SprintStart.triggered)
-        {
-            isHoldingSprint = true;
-        }
-        else if (_playerControls.Land.SprintEnd.triggered)
-        {
-            isHoldingSprint = false;
-        }
-
-        FallDistance();
         PlayerCrouching();
+        PlayerSprint();
+
+       /* Debug.DrawRay(frontRayPosition.transform.position, this.gameObject.gameObject.transform.forward * frontRayLenght, Color.red);
+        Debug.DrawRay(aboveRayPosition.transform.position, this.gameObject.gameObject.transform.up * aboveRayLenght, Color.red);
+        */
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(groundCheck.position, groundDistance);
+    }
+
+    /// <summary>
+    /// Método que maneja el sprint del jugador.
+    /// </summary>
+    private void PlayerSprint()
+    {
+        if (_playerControls.Land.SprintStart.triggered)
+            {
+                isHoldingSprint = true;
+            }
+        else if (_playerControls.Land.SprintEnd.triggered)
+            {
+                isHoldingSprint = false;
+            }
     }
 
     /// <summary>
@@ -231,10 +229,11 @@ public class PlayerController : MonoBehaviour
         if (!IsGrounded)
         {
             _animator.SetBool("IsGrounded", false);
+            _animator.ResetTrigger("LongJump");
 
             if(gravityVelocity.y < -3f)
             {
-                if(gravityVelocity.y < -7f)
+                if(gravityVelocity.y < -9f)
                 {
                     _animator.SetBool("Land", true);
                 }
@@ -243,6 +242,12 @@ public class PlayerController : MonoBehaviour
             {
                 _animator.SetBool("Land", false);
             }
+
+            _characterController.stepOffset = 0;
+        }
+        else
+        {
+            _characterController.stepOffset = 0.2f;            
         }
     }
 
@@ -251,7 +256,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void ShortJumpAnimation()
     {
-        if (_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.running && !isJumping)
+        if (_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.running && !isJumping && !CheckPlayerFront())
         {
             isJumping = true;
             _animator.SetTrigger("ShortJump");
@@ -273,7 +278,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void LongJumpAnimation()
     {
-        if (_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.standing && !isJumping)
+        if (_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.standing && !isJumping && !CheckPlayerAbove())
         {
             isJumping = true;
             _animator.SetTrigger("LongJump");
@@ -339,28 +344,12 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Calcula el daño de caída del jugador.
-    /// </summary>
-    public void FallDistance()
-    {
-
-        if (gravityVelocity.y < -20)
-        {
-            takeFallDamage = true;
-        }
-
-    }
-
-    /// <summary>
     /// Método que realiza la acciíon de agacharse de Benny.
     /// </summary>
     private void PlayerCrouching()
     {
 
-        if (_playerControls.Land.Crouch.triggered)
-        {
-
-            if (_playerControls.Land.Crouch.triggered)
+            if (_playerControls.Land.Crouch.triggered && _animationStates != AnimationStates.running)
             {
 
                 if (IsGrounded)
@@ -380,7 +369,7 @@ public class PlayerController : MonoBehaviour
                     }
 
                 }
-            }
+            
         }
     }
 
@@ -392,6 +381,30 @@ public class PlayerController : MonoBehaviour
         public void FootIndex1()
     {
         _animator.SetInteger("Foot Index", 1);
+    }
+
+    private bool CheckPlayerFront()
+    {
+        if(Physics.Raycast(frontRayPosition.transform.position, this.gameObject.transform.forward, frontRayLenght))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool CheckPlayerAbove()
+    {
+        if(Physics.Raycast(aboveRayPosition.transform.position, this.gameObject.transform.up, aboveRayLenght))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
 }
