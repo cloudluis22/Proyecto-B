@@ -22,18 +22,16 @@ public class EnemyAI : MonoBehaviour
     public Transform player;
     [SerializeField ]private LayerMask groundMask, playerMask;
 
-    private Vector3 startingPosition, destinationPoint;
+    private int destinationPoint = 0;
 
     [SerializeField] private float enemyShortRange, enemyMediumRange, enemyLargeRange;
     private float enemyRange;
 
-    [SerializeField] private float enemyWalkRangeX, enemyWalkRangeZ;
-
     private bool patrolPointSet;
 
     public PlayerController playerState;
-    
 
+    [SerializeField] private Transform[] wayPoints;
 
     // Start is called before the first frame update
     void Awake()
@@ -42,9 +40,11 @@ public class EnemyAI : MonoBehaviour
         playerState = GameObject.Find("Player").GetComponent<PlayerController>();
     }
 
-    private void Start() {
-        startingPosition = this.transform.position;
+    private void Start() 
+    {
         agent = GetComponent<NavMeshAgent>();
+        //agent.autoBraking = false;
+        agent.SetDestination(wayPoints[0].position);
     }
 
     // Update is called once per frame
@@ -52,8 +52,6 @@ public class EnemyAI : MonoBehaviour
     {
         SetEnemyState();
         SetEnemyRange();
-
-        
     }
 
     private void OnDrawGizmos() {
@@ -95,39 +93,24 @@ public class EnemyAI : MonoBehaviour
 
     }
 
-    private Vector3 NewPatrollingPoint()
-    {
-
-        float walkRangeX = Random.Range(-enemyWalkRangeX, enemyWalkRangeX);
-        float walkRangeZ = Random.Range(-enemyWalkRangeZ, enemyWalkRangeZ);
-
-        Vector3 walkPoint = new Vector3(walkRangeX + transform.position.x, 0f, walkRangeZ + transform.position.z);
-
-        return walkPoint;
-
-    }
     private void EnemyPatrol()
     {
-
-        if(!patrolPointSet)
+        if(agent.remainingDistance < 1.5f)
         {
-            destinationPoint = NewPatrollingPoint();
-            patrolPointSet = true;
+            EnemyPointMove();
         }
-        else
-        {
-            agent.SetDestination(destinationPoint);
-            transform.rotation = Quaternion.Lerp(transform.localRotation, Quaternion.LookRotation(destinationPoint), Time.deltaTime * 0.2f);
-        }
+    }
 
-        Vector3 walkPointDistance = (transform.position - destinationPoint);
-        Debug.Log(walkPointDistance.magnitude);
+    private void EnemyPointMove()
+    {
+        destinationPoint = (destinationPoint + 1) % wayPoints.Length;
+        agent.SetDestination(wayPoints[destinationPoint].position);
+    }
 
-        if(walkPointDistance.magnitude < 1f)
-        {
-            patrolPointSet = false;
-        }
-
+    private void ChasePlayer()
+    {
+        agent.SetDestination(player.position);
+        transform.localRotation = Quaternion.Lerp(transform.rotation, player.rotation, Time.deltaTime * 5f);
     }
 
     private void SetEnemyState()
@@ -136,11 +119,12 @@ public class EnemyAI : MonoBehaviour
         {
             case EnemyStates.Patrolling:
                 EnemyPatrol();
-             break;
+            break;
 
-
+            case EnemyStates.Chasing:
+                ChasePlayer();
+            break;            
         }
     }
-
 
 }
