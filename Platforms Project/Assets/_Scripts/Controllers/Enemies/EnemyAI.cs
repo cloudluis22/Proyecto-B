@@ -33,6 +33,20 @@ public class EnemyAI : MonoBehaviour
 
     [SerializeField] private Transform[] wayPoints;
 
+    private bool isSearching;
+    public bool IsSearching
+    {
+        get => isSearching;
+        set => isSearching = value;
+    }
+
+    private Vector3 playerSearchPosition;
+    public Vector3 PlayerSearchPosition 
+    {
+        get => playerSearchPosition; 
+        set => playerSearchPosition = value; 
+    }
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -43,13 +57,13 @@ public class EnemyAI : MonoBehaviour
     private void Start() 
     {
         agent = GetComponent<NavMeshAgent>();
-        //agent.autoBraking = false;
         agent.SetDestination(wayPoints[0].position);
     }
 
     // Update is called once per frame
     void Update()
     {
+        CheckEnemyState();
         SetEnemyState();
         SetEnemyRange();
     }
@@ -63,8 +77,7 @@ public class EnemyAI : MonoBehaviour
     /// Método que define el rango de detección del enemigo según el estado del jugador.
     /// </summary>
     private void SetEnemyRange()
-    {   
-               
+    {               
         if(playerState._animationStates == AnimationStates.crouching || playerState._animationStates == AnimationStates.crouchWalking) // Si está agachado o moviendose agachado.
         {
             enemyRange = enemyShortRange;
@@ -81,16 +94,6 @@ public class EnemyAI : MonoBehaviour
         {
             enemyRange = enemyMediumRange; // Cualquier otra cosa.
         }
-
-        if(!Physics.CheckSphere(this.transform.position, enemyRange, playerMask))
-        {
-            _enemyState = EnemyStates.Patrolling;
-        }
-        else
-        {
-            _enemyState = EnemyStates.Chasing;
-        } 
-
     }
 
     private void EnemyPatrol()
@@ -110,7 +113,38 @@ public class EnemyAI : MonoBehaviour
     private void ChasePlayer()
     {
         agent.SetDestination(player.position);
-        transform.localRotation = Quaternion.Lerp(transform.rotation, player.rotation, Time.deltaTime * 5f);
+     //   transform.localRotation = Quaternion.Lerp(transform.rotation, player.rotation, Time.deltaTime * 5f);
+    }
+
+    private void SearchPlayer()
+    {
+        if(isSearching)
+        {
+            agent.autoBraking = true;
+            agent.SetDestination(playerSearchPosition);
+        }
+    }
+
+    private void CheckEnemyState()
+    {
+        if(!Physics.CheckSphere(this.transform.position, enemyRange, playerMask))
+        {
+            if(isSearching)
+            {
+                if(_enemyState != EnemyStates.Chasing)
+                {
+                    _enemyState = EnemyStates.Searching;
+                }
+            }
+            else
+            {
+                _enemyState = EnemyStates.Patrolling;
+            }
+        }
+        else
+        {
+            _enemyState = EnemyStates.Chasing;
+        } 
     }
 
     private void SetEnemyState()
@@ -123,7 +157,11 @@ public class EnemyAI : MonoBehaviour
 
             case EnemyStates.Chasing:
                 ChasePlayer();
-            break;            
+            break;
+
+            case EnemyStates.Searching:
+                SearchPlayer();
+            break;                  
         }
     }
 
