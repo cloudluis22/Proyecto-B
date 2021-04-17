@@ -16,6 +16,11 @@ public class StaminaBar : MonoBehaviour
     private PlayerController playerController;
 
     private bool cooldown;
+    public bool Cooldown
+    {
+        get => cooldown;
+    }
+
 
     private void Start() 
     {

@@ -68,12 +68,16 @@ public class PlayerController : MonoBehaviour
     private float crouchSpeed = 2, defaultSpeed = 8;
 
     [Header("Front Raycast Settings")]
-   [SerializeField] private Transform frontRayPosition;
+    [SerializeField] private Transform frontRayPosition;
     [SerializeField] private float frontRayLenght = 0.3f;
+    
+    [Space(5)]
 
     [Header("Above Raycast Settings")]
-   [SerializeField] private Transform aboveRayPosition;
+    [SerializeField] private Transform aboveRayPosition;
     [SerializeField] private float aboveRayLenght = 0.5f;
+
+    [SerializeField] private StaminaBar staminaBar;
 
     private void Awake()
     {
@@ -104,10 +108,7 @@ public class PlayerController : MonoBehaviour
         PlayerGravity();
         PlayerCrouching();
         PlayerSprint();
-
-        Debug.DrawRay(frontRayPosition.transform.position, this.gameObject.gameObject.transform.forward * frontRayLenght, Color.red);
-        Debug.DrawRay(aboveRayPosition.transform.position, this.gameObject.gameObject.transform.up * aboveRayLenght, Color.red);
-        
+      //  CheckStaminaCooldown();
     }
 
     private void OnDrawGizmos()
@@ -121,11 +122,11 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void PlayerSprint()
     {
-        if (_playerControls.Land.SprintStart.triggered)
+        if (_playerControls.Land.SprintStart.triggered && !CheckStaminaCooldown())
             {
                 isHoldingSprint = true;
             }
-        else if (_playerControls.Land.SprintEnd.triggered)
+        else if (_playerControls.Land.SprintEnd.triggered || CheckStaminaCooldown())
             {
                 isHoldingSprint = false;
             }
@@ -256,7 +257,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void ShortJumpAnimation()
     {
-        if (_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.running && !isJumping && !CheckPlayerFront())
+        if (_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.running && !isJumping && !CheckPlayerFront() && !CheckStaminaCooldown())
         {
             isJumping = true;
             _animator.SetTrigger("ShortJump");
@@ -278,7 +279,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void LongJumpAnimation()
     {
-        if (_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.standing && !isJumping && !CheckPlayerAbove())
+        if (_playerControls.Land.Jump.triggered && IsGrounded && _animationStates == AnimationStates.standing && !isJumping && !CheckPlayerAbove() && !CheckStaminaCooldown())
         {
             isJumping = true;
             _animator.SetTrigger("LongJump");
@@ -398,6 +399,18 @@ public class PlayerController : MonoBehaviour
     private bool CheckPlayerAbove()
     {
         if(Physics.Raycast(aboveRayPosition.transform.position, this.gameObject.transform.up, aboveRayLenght))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool CheckStaminaCooldown()
+    {
+        if(staminaBar.Cooldown)
         {
             return true;
         }
