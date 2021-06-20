@@ -164,14 +164,14 @@ public class PlayerController : MonoBehaviour
                 movementSpeed = 0.3f * speedNumber;
             }
 
-            if(playerCombat.combatStates != CombatStates.Attacking){
+            
                 float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
                 float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, smoothTurnTime);
                 transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
                 Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
                 _characterController.Move(moveDirection.normalized * movementSpeed * Time.deltaTime);
-            }
+            
 
             if (_animator.GetFloat("Speed") > 0.01f)
             {

@@ -1352,7 +1352,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 451568957}
-  m_LocalRotation: {x: 0.013329795, y: 0.000000017204856, z: -2.2935753e-10, w: 0.9999112}
+  m_LocalRotation: {x: 0.013329795, y: 0.000000017204854, z: -2.2935757e-10, w: 0.9999112}
   m_LocalPosition: {x: -456.82343, y: -296.57312, z: -162.19191}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -1648,7 +1648,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 521942132}
-  m_LocalRotation: {x: 0.013329793, y: -0.000000017204854, z: 2.2935755e-10, w: 0.9999112}
+  m_LocalRotation: {x: 0.013329772, y: 0.000000017204849, z: -2.2935713e-10, w: 0.9999112}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -6562,7 +6562,7 @@ MonoBehaviour:
   _animator: {fileID: 1028077357157007171}
   cam: {fileID: 451568960}
   playerAudio: {fileID: 1086355625032290399}
-  playerCombat: {fileID: 1086355625032290398}
+  playerCombat: {fileID: 0}
   _animationStates: 0
   smoothTurnTime: 0.1
   gravityVelocity: {x: 0, y: 0, z: 0}
@@ -6611,13 +6611,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 069152c1b6ecad140b2263cfc2b17c29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animator: {fileID: 1028077357157007171}
-  _playerAudio: {fileID: 0}
-  _characterController: {fileID: 0}
-  combatStates: 0
-  canCombo: 0
-  maxTime: 0.25
-  maxCooldownTime: 1.5
 --- !u!114 &1086355625032290399
 MonoBehaviour:
   m_ObjectHideFlags: 0
